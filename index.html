@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hub — Nora Cárcamo</title>
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --surface: #1a1a1a;
+    --surface2: #222222;
+    --border: #2e2e2e;
+    --text: #e8e8e4;
+    --muted: #7a7a72;
+    --accent: #c8f04a;
+    --accent-dim: rgba(200,240,74,0.08);
+    --bracker: #4a9eff;
+    --bracker-dim: rgba(74,158,255,0.08);
+    --personal: #ff7b4a;
+    --personal-dim: rgba(255,123,74,0.08);
+    --mba: #b47aff;
+    --mba-dim: rgba(180,122,255,0.08);
+    --radius: 10px;
+    --font: -apple-system, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    min-height: 100vh;
+    padding: 48px 24px 80px;
+  }
+
+  header {
+    max-width: 860px;
+    margin: 0 auto 52px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 24px;
+  }
+
+  .header-left h1 {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  .header-left p {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: inline-block;
+    margin-right: 8px;
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-size: 12px;
+    font-family: var(--font);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .filter-btn:hover { border-color: var(--text); color: var(--text); }
+
+  .filter-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #0f0f0f;
+    font-weight: 600;
+  }
+
+  main {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+    margin-top: 40px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .section-label:first-of-type { margin-top: 0; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 12px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: border-color 0.15s, background 0.15s, transform 0.12s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+
+  .card:hover {
+    border-color: #444;
+    background: var(--surface2);
+    transform: translateY(-1px);
+  }
+
+  .card:hover::before { opacity: 1; }
+
+  .card[data-cat="Bracker"]::before { background: var(--bracker); }
+  .card[data-cat="Personal"]::before { background: var(--personal); }
+  .card[data-cat="MBA"]::before { background: var(--mba); }
+
+  .card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .card-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .card-arrow {
+    font-size: 14px;
+    color: var(--muted);
+    transition: color 0.15s, transform 0.15s;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .card:hover .card-arrow {
+    color: var(--text);
+    transform: translate(2px, -2px);
+  }
+
+  .card-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4px;
+  }
+
+  .badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .badge-bracker { background: var(--bracker-dim); color: var(--bracker); }
+  .badge-personal { background: var(--personal-dim); color: var(--personal); }
+  .badge-mba { background: var(--mba-dim); color: var(--mba); }
+
+  .status {
+    font-size: 10px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .status-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .status-dot.pending { background: var(--muted); }
+
+  .card[data-status="pending"] {
+    opacity: 0.55;
+    cursor: default;
+  }
+
+  .card[data-status="pending"]:hover {
+    transform: none;
+    border-color: var(--border);
+    background: var(--surface);
+  }
+
+  .card[data-status="pending"] .card-arrow { display: none; }
+
+  .hidden { display: none !important; }
+
+  .count {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 32px;
+  }
+
+  .count span { color: var(--text); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1><span class="dot"></span>Proyectos</h1>
+    <p>Hub personal — Nora Cárcamo</p>
+  </div>
+  <div class="filters">
+    <button class="filter-btn active" onclick="filter('todos')">Todos</button>
+    <button class="filter-btn" onclick="filter('Bracker')">Bracker</button>
+    <button class="filter-btn" onclick="filter('Personal')">Personal</button>
+    <button class="filter-btn" onclick="filter('MBA')">MBA</button>
+  </div>
+</header>
+
+<main>
+  <p class="count" id="count"><span id="count-n">7</span> proyectos</p>
+
+  <div class="section-label" data-section="Bracker">Bracker</div>
+  <div class="grid" id="grid-bracker">
+
+    <a class="card" data-cat="Bracker" data-status="live" href="https://interpack2026-sfs-bracker.netlify.app/" target="_blank">
+      <div class="card-top">
+        <span class="card-name">Guía Interpack 2026</span>
+        <span class="card-arrow">↗</span>
+      </div>
+      <p class="card-desc">Guía de exhibidores por hall para Interpack Düsseldorf. Competidores, socios y referencias.</p>
+      <div class="card-footer">
+        <span class="badge badge-bracker">Bracker</span>
+        <span class="status"><span class="status-dot"></span>Publicado</span>
+      </div>
+    </a>
+
+    <a class="card" data-cat="Bracker" data-status="live" href="./roi-benhil/" target="_blank">
+      <div class="card-top">
+        <span class="card-name">ROI Calculator Benhil</span>
+        <span class="card-arrow">↗</span>
+      </div>
+      <p class="card-desc">Calculadora de retorno de inversión para envasadoras de mantequilla y margarina.</p>
+      <div class="card-footer">
+        <span class="badge badge-bracker">Bracker</span>
+        <span class="status"><span class="status-dot"></span>Publicado</span>
+      </div>
+    </a>
+
+    <div class="card" data-cat="Bracker" data-status="pending">
+      <div class="card-top">
+        <span class="card-name">Mapa propuesta de valor Bracker</span>
+      </div>
+      <p class="card-desc">Mapa de propuesta de valor y BSC basado en tesis de MBA.</p>
+      <div class="card-footer">
+        <span class="badge badge-bracker">Bracker</span>
+        <span class="status"><span class="status-dot pending"></span>Próximamente</span>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Bracker" data-status="pending">
+      <div class="card-top">
+        <span class="card-name">Fidelización de clientes</span>
+      </div>
+      <p class="card-desc">Metodologías de fidelización de clientes, basado en tesis MBA de Leo Ortega Copefrut.</p>
+      <div class="card-footer">
+        <span class="badge badge-bracker">Bracker</span>
+        <span class="status"><span class="status-dot pending"></span>Próximamente</span>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Bracker" data-status="pending">
+      <div class="card-top">
+        <span class="card-name">Plan 90 días GC</span>
+      </div>
+      <p class="card-desc">Presentación plan primeros 90 días Gerencia Comercial.</p>
+      <div class="card-footer">
+        <span class="badge badge-bracker">Bracker</span>
+        <span class="status"><span class="status-dot pending"></span>Próximamente</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="section-label" data-section="Personal">Personal</div>
+  <div class="grid" id="grid-personal">
+
+    <a class="card" data-cat="Personal" data-status="live" href="https://playful-basbousa-d73646.netlify.app/" target="_blank">
+      <div class="card-top">
+        <span class="card-name">Stash</span>
+        <span class="card-arrow">↗</span>
+      </div>
+      <p class="card-desc">Organizador de recomendaciones del grupo Animales Financieros.</p>
+      <div class="card-footer">
+        <span class="badge badge-personal">Personal</span>
+        <span class="status"><span class="status-dot"></span>Publicado</span>
+      </div>
+    </a>
+
+    <a class="card" data-cat="Personal" data-status="live" href="https://gilded-melba-a7fb6d.netlify.app/" target="_blank">
+      <div class="card-top">
+        <span class="card-name">Lucca</span>
+        <span class="card-arrow">↗</span>
+      </div>
+      <p class="card-desc">Tracker de lactancia y peso para bebé. Sincronización en tiempo real.</p>
+      <div class="card-footer">
+        <span class="badge badge-personal">Personal</span>
+        <span class="status"><span class="status-dot"></span>Publicado</span>
+      </div>
+    </a>
+
+  </div>
+
+</main>
+
+<script>
+  let currentFilter = 'todos';
+
+  function filter(cat) {
+    currentFilter = cat;
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.textContent === (cat === 'todos' ? 'Todos' : cat));
+    });
+
+    const cards = document.querySelectorAll('.card');
+    let visible = 0;
+
+    cards.forEach(card => {
+      const match = cat === 'todos' || card.dataset.cat === cat;
+      card.classList.toggle('hidden', !match);
+      if (match) visible++;
+    });
+
+    document.querySelectorAll('.section-label').forEach(label => {
+      const section = label.dataset.section;
+      if (!section) return;
+      const grid = document.getElementById('grid-' + section.toLowerCase());
+      if (!grid) return;
+      const hasVisible = [...grid.querySelectorAll('.card')].some(c => !c.classList.contains('hidden'));
+      label.classList.toggle('hidden', !hasVisible);
+      grid.classList.toggle('hidden', !hasVisible);
+    });
+
+    document.getElementById('count-n').textContent = visible;
+  }
+</script>
+
+</body>
+</html>
