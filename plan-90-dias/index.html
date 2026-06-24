@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hoja de Ruta — 90 días</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0a1a2c;
+    --ink:#eef4fa;
+    --ink-dim:#7e9bb8;
+    --line:rgba(255,255,255,0.14);
+    --autoridad:#e0ad4d;
+    --visibilidad:#48c6e8;
+    --estandarizacion:#3fb89a;
+    --reglas:#e2724b;
+    --gold:#f3c94f;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;background:var(--navy);overflow:hidden;}
+  body{
+    background:radial-gradient(circle at 50% 0%, #102a44 0%, var(--navy) 55%);
+    color:var(--ink);
+    font-family:'IBM Plex Sans',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    height:100vh;
+    position:relative;
+    cursor:pointer;
+  }
+  .stage{position:relative;width:100%;height:100%;overflow:hidden;}
+
+  .slide{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:60px 22px 90px;
+    opacity:0; transform:scale(.88);
+    transition:opacity .55s ease, transform .55s cubic-bezier(.2,.8,.2,1);
+    pointer-events:none;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  .slide.active{opacity:1;transform:scale(1);pointer-events:auto;}
+  .slide-inner{max-width:480px;width:100%;margin:auto;text-align:center;}
+
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--ink-dim);text-transform:uppercase;}
+
+  /* HERO / OVERVIEW */
+  .hero h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(28px,8vw,40px);font-weight:700;margin:8px 0 6px;letter-spacing:-0.01em;}
+  .hero p.sub{color:var(--ink-dim);font-size:14px;margin:0 0 30px;}
+  .overview{display:flex;align-items:center;justify-content:center;gap:4px;margin-bottom:34px;}
+  .ov-stage{display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;cursor:pointer;}
+  .ov-circle{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;color:var(--navy);background:linear-gradient(145deg,var(--gold),#d99a2b);box-shadow:0 0 0 4px rgba(243,201,79,0.15),0 8px 18px rgba(0,0,0,0.35);transition:transform .2s;}
+  .ov-stage:hover .ov-circle{transform:scale(1.1);}
+  .ov-label{font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:var(--ink-dim);text-align:center;line-height:1.3;text-transform:uppercase;}
+  .ov-arrow{color:var(--ink-dim);font-size:18px;transform:translateY(-14px);}
+  .legend{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;}
+  .chip{display:flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-dim);border:1px solid var(--line);border-radius:20px;padding:5px 11px 5px 9px;cursor:pointer;transition:border-color .2s,color .2s;}
+  .chip:hover{color:var(--ink);border-color:var(--ink-dim);}
+  .chip .dot{width:9px;height:9px;border-radius:50%;}
+  .hint{margin-top:38px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-dim);letter-spacing:.05em;animation:bob 1.6s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(6px);}}
+
+  /* EJE INTRO SLIDES */
+  .eje-circle{width:120px;height:120px;border-radius:50%;margin:0 auto 26px;display:flex;align-items:center;justify-content:center;border:2px solid var(--ec);box-shadow:0 0 40px var(--ecglow);}
+  .eje-circle span{font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;color:var(--ec);}
+  .eje-title{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;margin:0 0 22px;color:var(--ec);}
+  .eje-block{margin-bottom:18px;text-align:left;border-left:2px solid var(--ec);padding-left:14px;}
+  .eje-block h4{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-dim);margin:0 0 5px;}
+  .eje-block p{font-size:14.5px;line-height:1.55;margin:0;color:var(--ink);}
+  .foco-nav{display:flex;justify-content:center;gap:22px;margin-top:28px;}
+  .foco-nav span{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.04em;color:var(--ink-dim);cursor:pointer;border-bottom:1px solid transparent;transition:color .2s,border-color .2s;}
+  .foco-nav span:hover{color:var(--ink);border-color:var(--ink-dim);}
+
+  /* FASE DETAIL */
+  .fase-head{display:flex;align-items:center;gap:14px;margin-bottom:24px;text-align:left;}
+  .fase-num{width:60px;height:60px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;border:2px solid var(--line);}
+  .fase-head h2{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;margin:0;text-align:left;}
+  .fase-head span{display:block;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-dim);margin-top:2px;}
+  .chain{position:relative;padding-left:30px;text-align:left;}
+  .chain::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:2px;background:var(--line);}
+  .node{position:relative;margin-bottom:18px;}
+  .node-circle{position:absolute;left:-30px;top:0;width:22px;height:22px;border-radius:50%;background:var(--nc);box-shadow:0 0 0 4px var(--navy),0 0 10px var(--nc);}
+  .node-date{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-dim);}
+  .node-title{font-size:13.5px;font-weight:600;margin:2px 0 0;line-height:1.35;}
+  .hito-wrap{display:flex;flex-direction:column;align-items:center;margin-top:24px;}
+  .hito-circle{width:80px;height:80px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at 35% 30%,#ffe9a8,var(--gold) 60%,#c9941f);box-shadow:0 0 0 6px rgba(243,201,79,0.15),0 0 30px rgba(243,201,79,0.45);animation:pulse 2.8s ease-in-out infinite;}
+  .hito-circle .hd{font-family:'IBM Plex Mono',monospace;font-size:8px;font-weight:700;color:#3a2a05;}
+  .hito-circle .hn{font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:700;color:#241a04;line-height:1;}
+  @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.06);}}
+  .hito-text{text-align:center;margin-top:10px;}
+  .hito-text .ht-title{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;color:var(--gold);}
+  .hito-text p{font-size:12px;color:var(--ink-dim);margin:4px 0 0;line-height:1.5;max-width:340px;}
+
+  /* CIERRE */
+  .cierre h2{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;color:var(--gold);}
+  .cierre p{color:var(--ink-dim);font-size:13.5px;line-height:1.6;}
+
+  /* NAV */
+  .navbar{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;gap:14px;padding:14px 0 20px;background:linear-gradient(transparent,rgba(10,26,44,0.9) 40%);z-index:10;}
+  .nav-btn{background:none;border:1px solid var(--line);color:var(--ink-dim);width:34px;height:34px;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .nav-btn:hover{color:var(--ink);border-color:var(--ink-dim);}
+  .dots{display:flex;gap:6px;}
+  .dot-i{width:6px;height:6px;border-radius:50%;background:var(--line);cursor:pointer;transition:background .2s,transform .2s;}
+  .dot-i.active{background:var(--gold);transform:scale(1.4);}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+
+  <div class="slide active" data-jump>
+    <div class="slide-inner hero">
+      <div class="eyebrow">Bracker · Gerencia Comercial</div>
+      <h1>Hoja de Ruta<br>90 días</h1>
+      <p class="sub">16 jun — 14 sep 2026</p>
+      <div class="overview">
+        <div class="ov-stage" onclick="event.stopPropagation();go(5)">
+          <div class="ov-circle">01</div>
+          <div class="ov-label">Mes 1<br>Autoridad</div>
+        </div>
+        <div class="ov-arrow">→</div>
+        <div class="ov-stage" onclick="event.stopPropagation();go(6)">
+          <div class="ov-circle">02</div>
+          <div class="ov-label">Mes 2<br>Sistema</div>
+        </div>
+        <div class="ov-arrow">→</div>
+        <div class="ov-stage" onclick="event.stopPropagation();go(7)">
+          <div class="ov-circle">03</div>
+          <div class="ov-label">Mes 3<br>Reglas</div>
+        </div>
+      </div>
+      <div class="legend">
+        <div class="chip" onclick="event.stopPropagation();go(1)"><span class="dot" style="background:var(--autoridad)"></span>Autoridad</div>
+        <div class="chip" onclick="event.stopPropagation();go(2)"><span class="dot" style="background:var(--visibilidad)"></span>Visibilidad</div>
+        <div class="chip" onclick="event.stopPropagation();go(3)"><span class="dot" style="background:var(--estandarizacion)"></span>Estandarización</div>
+        <div class="chip" onclick="event.stopPropagation();go(4)"><span class="dot" style="background:var(--reglas)"></span>Reglas del juego</div>
+      </div>
+      <div class="hint">toca para empezar →</div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <div class="slide-inner" style="--ec:var(--autoridad);--ecglow:rgba(224,173,77,0.35)">
+      <div class="eyebrow">Foco 01</div>
+      <div class="eje-circle"><span>A</span></div>
+      <h2 class="eje-title">Autoridad</h2>
+      <div class="eje-block">
+        <h4>Qué es</h4>
+        <p>Mandato claro de liderazgo comercial, con delegación efectiva de decisiones desde Gerencia General.</p>
+      </div>
+      <div class="eje-block">
+        <h4>Para qué sirve</h4>
+        <p>Es la base que habilita todo lo demás: sin mandato claro y delegación real, ningún cambio de proceso logra adopción sostenida en el equipo. Por eso va primero.</p>
+      </div>
+      <div class="foco-nav" onclick="event.stopPropagation()"><span onclick="go(0)">← Inicio</span><span onclick="go(5)">Ver fases →</span></div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <div class="slide-inner" style="--ec:var(--visibilidad);--ecglow:rgba(72,198,232,0.35)">
+      <div class="eyebrow">Foco 02</div>
+      <div class="eje-circle"><span>V</span></div>
+      <h2 class="eje-title">Visibilidad comercial</h2>
+      <div class="eje-block">
+        <h4>Qué es</h4>
+        <p>Información confiable y actualizada del pipeline real en las 3 unidades, sin depender de memoria individual.</p>
+      </div>
+      <div class="eje-block">
+        <h4>Para qué sirve</h4>
+        <p>Antes de estandarizar hay que ver con datos qué falla. Sin visibilidad, cualquier estandarización es a ciegas.</p>
+      </div>
+      <div class="foco-nav" onclick="event.stopPropagation()"><span onclick="go(0)">← Inicio</span><span onclick="go(5)">Ver fases →</span></div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <div class="slide-inner" style="--ec:var(--estandarizacion);--ecglow:rgba(63,184,154,0.35)">
+      <div class="eyebrow">Foco 03</div>
+      <div class="eje-circle"><span>E</span></div>
+      <h2 class="eje-title">Estandarización</h2>
+      <div class="eje-block">
+        <h4>Qué es</h4>
+        <p>Plantillas de oferta, cálculo de margen y condiciones comerciales unificadas en las 3 unidades.</p>
+      </div>
+      <div class="eje-block">
+        <h4>Para qué sirve</h4>
+        <p>Reduce el riesgo y la ineficiencia de que cada quien cotice y calcule margen a su propio criterio.</p>
+      </div>
+      <div class="foco-nav" onclick="event.stopPropagation()"><span onclick="go(0)">← Inicio</span><span onclick="go(5)">Ver fases →</span></div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <div class="slide-inner" style="--ec:var(--reglas);--ecglow:rgba(226,114,75,0.35)">
+      <div class="eyebrow">Foco 04</div>
+      <div class="eje-circle"><span>R</span></div>
+      <h2 class="eje-title">Reglas del juego</h2>
+      <div class="eje-block">
+        <h4>Qué es</h4>
+        <p>Políticas internas claras y comunicadas — viajes, descuentos, aprobación de precios.</p>
+      </div>
+      <div class="eje-block">
+        <h4>Para qué sirve</h4>
+        <p>Sin reglas claras hay inconsistencia y desalineación interna. Se formalizan al final, no al inicio, para no generar resistencia innecesaria.</p>
+      </div>
+      <div class="foco-nav" onclick="event.stopPropagation()"><span onclick="go(0)">← Inicio</span><span onclick="go(5)">Ver fases →</span></div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="fase-head">
+        <div class="fase-num" style="color:var(--autoridad);border-color:var(--autoridad)">01</div>
+        <div><h2>Fase 1 — Construir autoridad</h2><span>16 jun – 15 jul</span></div>
+      </div>
+      <div class="chain">
+        <div class="node"><div class="node-circle" style="--nc:var(--autoridad)"></div><span class="node-date">16–20 jun</span><div class="node-title">1:1 Calibración con cada uno de los 4</div></div>
+        <div class="node"><div class="node-circle" style="--nc:var(--autoridad)"></div><span class="node-date">22 jun</span><div class="node-title">Contrato de mando con Philipp</div></div>
+        <div class="node"><div class="node-circle" style="--nc:var(--visibilidad)"></div><span class="node-date">23–27 jun</span><div class="node-title">Primera mirada al pipeline (piloto)</div></div>
+        <div class="node"><div class="node-circle" style="--nc:var(--estandarizacion)"></div><span class="node-date">30 jun–4 jul</span><div class="node-title">Plantilla v1 — testeo con 1 vendedor</div></div>
+        <div class="node"><div class="node-circle" style="--nc:var(--autoridad)"></div><span class="node-date">2–3 jul</span><div class="node-title">Kickoff grupal + 1:1 Lanzamiento</div></div>
+        <div class="node"><div class="node-circle" style="--nc:var(--visibilidad)"></div><span class="node-date">2–3 jul</span><div class="node-title">Instalación rutinaria semanal — oficial</div></div>
+        <div class="node"><div class="node-circle" style="--nc:var(--autoridad)"></div><span class="node-date">6 jul</span><div class="node-title">Update a Philipp</div></div>
+        <div class="node"><div class="node-circle" style="--nc:var(--estandarizacion)"></div><span class="node-date">7–11 jul</span><div class="node-title">Plantilla v1 aprobada y en uso</div></div>
+      </div>
+      <div class="hito-wrap">
+        <div class="hito-circle"><span class="hd">DÍA</span><span class="hn">30</span></div>
+        <div class="hito-text"><div class="ht-title">Cierre Fase 1</div><p>Cadence funcionando + 1 plantilla en uso + diagnóstico validado por el equipo.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="fase-head">
+        <div class="fase-num" style="color:var(--visibilidad);border-color:var(--visibilidad)">02</div>
+        <div><h2>Fase 2 — Instalar el sistema</h2><span>16 jul – 14 ago</span></div>
+      </div>
+      <div class="chain">
+        <div class="node"><div class="node-circle" style="--nc:var(--visibilidad)"></div><span class="node-date">14 jul–1 ago</span><div class="node-title">Revisión grupal de pipeline + scorecard</div></div>
+        <div class="node"><div class="node-circle" style="--nc:var(--estandarizacion)"></div><span class="node-date">14 jul–8 ago</span><div class="node-title">Plantilla en las 3 unidades + margen estandarizado</div></div>
+        <div class="node"><div class="node-circle" style="--nc:var(--reglas)"></div><span class="node-date">14–25 jul</span><div class="node-title">Política de viajes comunicada y vigente</div></div>
+      </div>
+      <div class="hito-wrap">
+        <div class="hito-circle"><span class="hd">DÍA</span><span class="hn">60</span></div>
+        <div class="hito-text"><div class="ht-title">Cierre Fase 2</div><p>3 plantillas en uso + margen estandarizado + política de viajes funcionando + scorecard con histórico.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="fase-head">
+        <div class="fase-num" style="color:var(--reglas);border-color:var(--reglas)">03</div>
+        <div><h2>Fase 3 — Fijar las reglas</h2><span>15 ago – 14 sep</span></div>
+      </div>
+      <div class="chain">
+        <div class="node"><div class="node-circle" style="--nc:var(--reglas)"></div><span class="node-date">15–29 ago</span><div class="node-title">Política de descuentos — borrador y validación</div></div>
+        <div class="node"><div class="node-circle" style="--nc:var(--estandarizacion)"></div><span class="node-date">25 ago–5 sep</span><div class="node-title">Condiciones comerciales documentadas por unidad</div></div>
+        <div class="node"><div class="node-circle" style="--nc:var(--reglas)"></div><span class="node-date">1–5 sep</span><div class="node-title">Documento "reglas del juego comercial" consolidado</div></div>
+      </div>
+      <div class="hito-wrap">
+        <div class="hito-circle"><span class="hd">DÍA</span><span class="hn">90</span></div>
+        <div class="hito-text"><div class="ht-title">Cierre 90 días</div><p>Resultados medibles + propuesta de agenda para los próximos 90 días.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <div class="slide-inner cierre">
+      <div class="eyebrow">Bracker · Gerencia Comercial</div>
+      <h2>4 focos. 3 fases. 90 días.</h2>
+      <p>Autoridad → Visibilidad → Estandarización → Reglas del juego.<br>Cada uno habilita al siguiente.</p>
+    </div>
+  </div>
+
+  <div class="navbar" onclick="event.stopPropagation()">
+    <button class="nav-btn" onclick="prev()">‹</button>
+    <div class="dots" id="dots"></div>
+    <button class="nav-btn" onclick="next()">›</button>
+  </div>
+
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dotsWrap = document.getElementById('dots');
+  let current = 0;
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot-i' + (i === 0 ? ' active' : '');
+    d.onclick = (e) => { e.stopPropagation(); go(i); };
+    dotsWrap.appendChild(d);
+  });
+  function go(i){
+    if(i < 0 || i >= slides.length) return;
+    slides[current].classList.remove('active');
+    dotsWrap.children[current].classList.remove('active');
+    current = i;
+    slides[current].classList.add('active');
+    dotsWrap.children[current].classList.add('active');
+  }
+  function next(){ go(Math.min(current+1, slides.length-1)); }
+  function prev(){ go(Math.max(current-1, 0)); }
+  document.getElementById('stage').addEventListener('click', (e)=>{
+    if(e.target.closest('.navbar')) return;
+    next();
+  });
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'ArrowRight' || e.key === 'ArrowDown') next();
+    if(e.key === 'ArrowLeft' || e.key === 'ArrowUp') prev();
+  });
+</script>
+</body>
+</html>
