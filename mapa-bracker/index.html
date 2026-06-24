@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Propuesta de Valor · Bracker SpA</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:     #1A2246;
+  --blue:     #4285F4;
+  --white:    #FFFFFF;
+  --gray-lt:  #EEEEEE;
+  --gray-txt: #595959;
+  --green:    #3A7D44;
+  --green-lt: #E8F5EA;
+  --amber:    #D4820A;
+  --amber-lt: #FFF3E0;
+  --italic-c: #4285F4;
+  --bg:       #F4F6FB;
+  --red-diff: #C62828;
+  --card-bg:  #FFFFFF;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Montserrat',sans-serif;
+  background:#0d1829;
+  height:100vh;width:100vw;
+}
+.deck{width:100vw;height:100vh;position:relative}
+.slide{
+  position:absolute;inset:0;
+  display:none;flex-direction:column;
+  background:var(--bg);overflow-y:auto;overflow-x:hidden;
+}
+.slide.active{display:flex}
+.slide::after{content:"";display:none}
+.slide-stripe{position:fixed;bottom:0;left:0;width:260px;height:5px;background:linear-gradient(90deg,#3A7D44 0%,#1A2246 60%,transparent 100%);z-index:200;pointer-events:none}
+
+/* NAV */
+.nav{
+  position:fixed;bottom:18px;right:22px;
+  display:flex;align-items:center;gap:10px;z-index:100;
+}
+.nav-btn{
+  background:var(--navy);color:white;border:none;
+  width:38px;height:38px;border-radius:50%;cursor:pointer;
+  font-size:16px;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 8px rgba(0,0,0,.35);transition:background .2s;
+}
+.nav-btn:hover{background:var(--blue)}
+.nav-btn:disabled{background:#444;cursor:default}
+.nav-counter{
+  font-size:11px;font-weight:700;color:white;
+  background:rgba(0,0,0,.55);padding:4px 11px;
+  border-radius:12px;letter-spacing:.5px;
+}
+
+/* SECTION LABEL */
+.section-label{
+  position:absolute;top:16px;right:22px;
+  font-size:9px;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--gray-txt);
+}
+
+/* SLIDE CHROME */
+.slide-pad{padding:32px 48px 44px}
+.slide-title{
+  font-size:26px;font-weight:700;color:var(--navy);
+  line-height:1.15;margin-bottom:5px;
+}
+.slide-sub{
+  font-size:13px;font-weight:400;color:var(--gray-txt);
+  margin-bottom:20px;
+}
+
+/* ── S1 PORTADA ── */
+#s1{background:var(--navy);justify-content:center;align-items:flex-start;padding:52px 64px}
+#s1::after{width:100%;height:5px;background:linear-gradient(90deg,var(--green) 0%,var(--blue) 40%,transparent 80%)}
+.s1-eye{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:20px}
+.s1-title{font-size:clamp(32px,4.5vw,56px);font-weight:700;color:white;line-height:1.1;margin-bottom:14px;max-width:660px}
+.s1-sub{font-size:17px;font-weight:400;color:rgba(255,255,255,.6);margin-bottom:44px}
+.s1-meta{display:flex;gap:36px;flex-wrap:wrap}
+.s1-ml{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:3px}
+.s1-mv{font-size:13px;color:rgba(255,255,255,.75);font-weight:600}
+.s1-accent{position:absolute;right:0;top:0;bottom:0;width:300px;
+  background:linear-gradient(180deg,var(--blue) 0%,var(--navy) 50%,var(--green) 100%);
+  opacity:.12;clip-path:polygon(28% 0,100% 0,100% 100%,0% 100%)}
+.s1-logo-box{position:absolute;right:64px;top:50%;transform:translateY(-50%);text-align:center}
+.s1-logo{font-size:44px;font-weight:700;color:white;letter-spacing:-1px}
+.s1-logo span{color:var(--blue)}
+.s1-logo-sub{font-size:10px;color:rgba(255,255,255,.5);letter-spacing:2px;text-transform:uppercase;margin-top:4px}
+.index-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:32px;max-width:620px}
+.index-block{
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+  border-radius:10px;padding:18px 22px;cursor:pointer;
+  transition:background .2s,border-color .2s;
+}
+.index-block:hover{background:rgba(255,255,255,.12);border-color:var(--blue)}
+.index-block-label{font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--blue);margin-bottom:5px}
+.index-block-title{font-size:17px;font-weight:700;color:white;margin-bottom:5px}
+.index-block-slides{font-size:11px;color:rgba(255,255,255,.45)}
+.index-block-arrow{float:right;font-size:18px;color:var(--blue);margin-top:-26px}
+
+/* ── S2 FUENTE ── */
+.source-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:18px}
+.source-card{background:white;border:1px solid var(--gray-lt);border-top:4px solid var(--navy);border-radius:8px;padding:18px 20px}
+.source-card.b{border-top-color:var(--green)}
+.source-card.c{border-top-color:var(--blue)}
+.source-icon{font-size:26px;margin-bottom:9px}
+.source-card h3{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:5px}
+.source-card p{font-size:12px;color:var(--gray-txt);line-height:1.55}
+.legend-row{
+  display:flex;gap:22px;align-items:center;
+  background:white;border:1px solid var(--gray-lt);
+  border-radius:8px;padding:11px 18px;font-size:12px;flex-wrap:wrap;
+}
+.leg{display:flex;align-items:center;gap:7px}
+.leg-dot{width:11px;height:11px;border-radius:50%}
+
+
+
+
+.unit-icon{font-size:18px}
+.unit-header h3{font-size:13px;font-weight:700;color:white}
+
+.unit-body p{font-size:12px;color:var(--gray-txt);line-height:1.55}
+
+
+
+
+
+
+
+.role-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.role-tag{font-size:10px;padding:2px 9px;border-radius:10px;font-weight:600}
+.role-tag.ops{background:#e3eef8;color:var(--navy)}
+.role-tag.maint{background:#fce8e8;color:#c0392b}
+.role-tag.mgmt{background:var(--green-lt);color:var(--green)}
+
+/* ── S4 DOLORES ── */
+#s4{background:var(--navy);padding:32px 48px 44px;overflow-y:auto}
+#s4 .slide-title{color:white}
+#s4 .slide-sub{color:rgba(255,255,255,.55)}
+
+.pains-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;flex:1}
+.pain-card{
+  background:rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.3);
+  border-left:4px solid #e74c3c;
+  border-radius:8px;padding:16px 18px;
+}
+.pain-card.ext{border-left-color:var(--blue)}
+.pain-num{font-size:28px;font-weight:700;color:rgba(255,255,255,.35);line-height:1;margin-bottom:7px}
+.pain-text{font-size:13px;font-weight:600;color:white;line-height:1.5}
+.pain-card.ext .pain-text{color:rgba(255,255,255,.65);font-style:italic}
+.pain-source{font-size:10px;color:rgba(255,255,255,.35);margin-top:7px}
+
+/* ── S5 GANANCIAS ── */
+.gains-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1}
+.gain-card{
+  background:white;border:1px solid var(--gray-lt);
+  border-left:4px solid var(--green);border-radius:8px;
+  padding:13px 16px;display:flex;gap:11px;align-items:flex-start;
+}
+.gain-icon{font-size:19px;flex-shrink:0;margin-top:1px}
+.gain-text{font-size:13px;font-weight:600;color:var(--navy);line-height:1.45}
+.gain-quote{font-size:11px;color:var(--gray-txt);margin-top:4px;font-style:italic}
+
+/* ── S6 VPC ── */
+#s6{padding:24px 36px 36px}
+#s6 .slide-title{font-size:22px}
+.vpc-container{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;min-height:460px}
+.vpc-side{background:white;border-radius:10px;overflow:hidden;box-shadow:0 3px 14px rgba(26,34,70,.08);display:flex;flex-direction:column}
+.vpc-side-header{padding:10px 18px;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:white}
+.vpc-side-header.client{background:var(--navy)}
+.vpc-side-header.bracker{background:var(--green)}
+.vpc-cells{display:grid;grid-template-rows:1fr 1fr 1fr;flex:1}
+.vpc-cell{border-bottom:1px solid var(--gray-lt);padding:9px 14px;overflow-y:auto;min-height:0}
+.vpc-cell:last-child{border-bottom:none}
+.vpc-cell-head{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px;display:flex;align-items:center;gap:6px}
+.vpc-cell-head.jobs{color:var(--navy)}
+.vpc-cell-head.pains{color:#c0392b}
+.vpc-cell-head.gains{color:var(--green)}
+.vpc-cell-head.prods{color:var(--navy)}
+.vpc-cell-head.reliev{color:#c0392b}
+.vpc-cell-head.creat{color:var(--green)}
+.vpc-badge{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;font-size:9px}
+.vpc-badge.jobs{background:#e3eef8}
+.vpc-badge.pains{background:#fce8e8}
+.vpc-badge.gains{background:var(--green-lt)}
+.vpc-badge.prods{background:#e3eef8}
+.vpc-badge.reliev{background:#fce8e8}
+.vpc-badge.creat{background:var(--green-lt)}
+.vpc-cell ul{list-style:none;padding:0}
+.vpc-cell ul li{font-size:13px;line-height:1.5;padding:3px 0 3px 13px;position:relative;color:var(--gray-txt);border-bottom:1px dotted var(--gray-lt)}
+.vpc-cell ul li:last-child{border-bottom:none}
+.vpc-cell ul li::before{content:'·';position:absolute;left:2px;color:#aaa;font-weight:700}
+.vpc-cell ul li.ext{color:var(--italic-c);font-style:italic}
+.vpc-cell ul li.ext::before{color:var(--italic-c)}
+
+/* ── S7 BMC ── */
+#s7{padding:24px 36px 36px}
+#s7 .slide-title{font-size:22px}
+.bmc-wrap{margin-top:12px;flex:1;display:flex;flex-direction:column;gap:3px}
+.bmc-row{display:flex;gap:3px;flex:1}
+.bmc-cell{border-radius:6px;padding:9px 11px;display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.bmc-label{font-size:11px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;margin-bottom:5px;opacity:.9;flex-shrink:0}
+.bmc-icon{font-size:18px;margin-bottom:4px;flex-shrink:0}
+.bmc-content{font-size:12px;line-height:1.5;overflow:hidden}
+.bmc-content li{margin-bottom:1px;padding-left:8px;position:relative}
+.bmc-content li::before{content:'·';position:absolute;left:0}
+.bmc-content li.ext{font-style:italic;opacity:.75}
+.bmc-kp{background:#D6E4F7;color:#1A2246;flex:1.2}
+.bmc-ka{background:#C8DCF5;color:#1A2246;flex:1}
+.bmc-kr{background:#B8CEED;color:#1A2246;flex:1}
+.bmc-vp{background:#4285F4;color:white;flex:1.4}
+.bmc-cr{background:#D4820A;color:white;flex:1}
+.bmc-ch{background:#B8690A;color:white;flex:1}
+.bmc-cs{background:#F5A623;color:#1A2246;flex:1.2}
+.bmc-cost{background:#3A7D44;color:white;flex:1}
+.bmc-rev{background:#2D6A38;color:white;flex:1}
+.bmc-row-bottom{flex:.6}
+
+/* ── S8 INSIGHTS ── */
+.insights-grid-slide{display:grid;grid-template-columns:1fr 1fr;gap:16px;flex:1}
+.ins-card{background:white;border-radius:10px;box-shadow:0 3px 14px rgba(26,34,70,.08);padding:20px 22px;border-top:5px solid var(--amber);display:flex;flex-direction:column}
+.ins-tag{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--amber);margin-bottom:7px}
+.ins-title{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:7px;line-height:1.25}
+.ins-body{font-size:12px;color:var(--gray-txt);line-height:1.55;flex:1}
+.ins-quote{margin-top:11px;padding:9px 13px;background:var(--amber-lt);border-left:3px solid var(--amber);border-radius:4px;font-size:11px;font-style:italic;color:var(--navy);line-height:1.5}
+
+/* ── S9 BRECHAS ── */
+#s9{padding:28px 44px 40px}
+.gap-table-slide{width:100%;border-collapse:collapse;margin-top:16px;background:white;border-radius:10px;overflow:hidden;box-shadow:0 3px 14px rgba(26,34,70,.08)}
+.gap-table-slide thead th{background:var(--navy);color:white;padding:11px 14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;text-align:left}
+.gap-table-slide tbody td{padding:10px 14px;font-size:12.5px;border-bottom:1px solid var(--gray-lt);vertical-align:top;line-height:1.45;color:var(--gray-txt)}
+.gap-table-slide tbody tr:last-child td{border-bottom:none}
+.gap-table-slide tbody tr:nth-child(even){background:#fafbfd}
+.gap-table-slide td:first-child{font-weight:700;color:var(--navy);font-size:12px}
+.badge-alta{display:inline-block;background:#fce8e8;color:#c0392b;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:.3px}
+.badge-media{display:inline-block;background:#fff3e0;color:#E65100;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:.3px}
+.badge-ausente{display:inline-block;background:#e8eaf6;color:#283593;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:.3px}
+
+/* ── S10 WORD CLOUD ── */
+#s10{background:var(--navy);overflow:hidden}
+
+.wc-header{padding:22px 44px 0;text-align:center}
+.wc-eyebrow{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:6px}
+.wc-title{font-size:22px;font-weight:700;color:white;margin-bottom:4px}
+.wc-sub{font-size:11px;color:rgba(255,255,255,.45)}
+.wc-legend{display:flex;gap:16px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.wc-leg{display:flex;align-items:center;gap:6px;font-size:10px;color:rgba(255,255,255,.55)}
+.wc-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.wc-canvas{position:relative;flex:1;margin:6px 20px 40px}
+.word{position:absolute;transform:translate(-50%,-50%);font-weight:700;cursor:default;white-space:nowrap;line-height:1;letter-spacing:-.2px;font-family:'Montserrat',sans-serif}
+.word:hover{opacity:.7}
+/* triple overlap */
+.wc-tri{color:#90EEB0;text-shadow:0 0 18px rgba(144,238,176,.45)}
+/* client+brand */
+.wc-cb{color:#5BC8FF}
+/* client only */
+.wc-c{color:#5ECC7A}
+/* brand only */
+.wc-v{color:#F5C842}
+/* mission/vision only */
+.wc-mv{color:rgba(255,255,255,.7)}
+.wc-panels{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:0 28px 30px}
+.wc-panel{border-radius:8px;padding:11px 14px}
+.wc-panel.cli{background:rgba(66,133,244,.12);border:1px solid rgba(66,133,244,.35)}
+.wc-panel.val{background:rgba(94,204,122,.1);border:1px solid rgba(94,204,122,.3)}
+.wc-panel.mv{background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.25)}
+.wc-panel h4{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
+.wc-panel.cli h4{color:#4285F4}
+.wc-panel.val h4{color:#5ECC7A}
+.wc-panel.mv h4{color:#F5C842}
+.wc-panel p{font-size:11px;color:rgba(255,255,255,.6);line-height:1.55}
+.wc-panel p em{color:rgba(255,255,255,.35);font-style:italic}
+
+/* ── S11 AD DIFERENTE ── */
+#s11{background:var(--navy);padding:40px 56px;text-align:center;overflow-y:auto}
+
+.ad-eyebrow{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--amber);margin-bottom:24px}
+.ad-question{font-size:clamp(26px,3.5vw,44px);font-weight:700;color:white;line-height:1.25;max-width:720px;margin-bottom:32px}
+.ad-question em{color:var(--blue);font-style:normal}
+.ad-cards{display:flex;gap:14px;justify-content:center}
+.ad-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:16px 20px;text-align:left;width:210px}
+.ad-card-no{font-size:9px;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.ad-card-yes{font-size:9px;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.ad-card p{font-size:12px;color:white;line-height:1.5}
+
+/* ── S12 MT IDEAS ── */
+#s12{padding:28px 48px 40px}
+.comp-slide-layout{display:grid;grid-template-columns:1fr 2fr;gap:22px;flex:1}
+.comp-identity{background:white;border-radius:10px;padding:20px;box-shadow:0 3px 14px rgba(26,34,70,.07);display:flex;flex-direction:column}
+.comp-name{font-size:20px;font-weight:700;color:var(--navy);margin-bottom:3px}
+.comp-origin{font-size:11px;color:var(--gray-txt);margin-bottom:13px}
+.comp-type-pill{display:inline-block;padding:3px 11px;border-radius:11px;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:13px}
+.pill-comp{background:#fce8e8;color:#c0392b}
+.pill-ref{background:var(--green-lt);color:var(--green)}
+.comp-prop-quote{font-size:12px;font-style:italic;color:var(--gray-txt);border-left:3px solid var(--gray-lt);padding-left:10px;margin-bottom:13px;line-height:1.55;flex:1}
+.comp-points-slide{list-style:none;padding:0}
+.comp-points-slide li{font-size:12px;padding:5px 0 5px 16px;position:relative;color:var(--gray-txt);border-bottom:1px solid var(--gray-lt);line-height:1.45}
+.comp-points-slide li:last-child{border-bottom:none}
+.comp-points-slide li::before{content:'→';position:absolute;left:0;color:var(--navy);font-size:10px}
+.comp-highlight{background:white;border-radius:10px;padding:20px;box-shadow:0 3px 14px rgba(26,34,70,.07);display:flex;flex-direction:column;gap:13px}
+.highlight-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--gray-txt);margin-bottom:4px}
+.highlight-item{border-left:4px solid var(--blue);padding:10px 14px;background:var(--bg);border-radius:0 6px 6px 0}
+.highlight-item.danger{border-left-color:#c0392b}
+.highlight-item.good{border-left-color:var(--green)}
+.highlight-item h4{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.highlight-item p{font-size:11.5px;color:var(--gray-txt);line-height:1.5}
+
+/* ── S13 BIACONSULT ── */
+#s13{padding:28px 48px 40px}
+
+/* ── S14 REFERENTES ── */
+#s14{padding:28px 48px 40px}
+.ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;flex:1}
+.ref-card{background:white;border-radius:10px;box-shadow:0 3px 14px rgba(26,34,70,.08);overflow:hidden}
+.ref-header{background:var(--green);padding:14px 18px;color:white}
+.ref-header h3{font-size:15px;font-weight:700;margin-bottom:2px}
+.ref-header span{font-size:10px;opacity:.8}
+.ref-body{padding:14px 18px}
+.ref-quote{font-size:12px;font-style:italic;color:var(--gray-txt);border-left:3px solid var(--green);padding-left:10px;margin-bottom:12px;line-height:1.5}
+.ref-learn{background:var(--green-lt);border-radius:6px;padding:10px 13px}
+.ref-learn-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--green);margin-bottom:6px}
+.ref-learn ul{list-style:none}
+.ref-learn ul li{font-size:11.5px;color:var(--gray-txt);padding:3px 0 3px 12px;position:relative;line-height:1.45}
+.ref-learn ul li::before{content:'✓';position:absolute;left:0;color:var(--green);font-size:10px}
+
+/* ── BSC SLIDES ── */
+#s15,#s16,#s17{padding:28px 44px 40px}
+#s15{background:var(--navy)}
+
+#s15 .slide-title{color:white;font-size:24px}
+#s15 .slide-sub{color:rgba(255,255,255,.55)}
+.bsc-theory-grid{display:grid;grid-template-columns:1fr 1.6fr;gap:20px;flex:1}
+.bsc-quote-panel{display:flex;flex-direction:column;gap:13px}
+.bsc-big-quote{background:rgba(255,255,255,.06);border-left:4px solid var(--green);border-radius:0 8px 8px 0;padding:18px 20px;flex:1}
+.bsc-big-quote p{font-size:14px;font-style:italic;color:white;line-height:1.65}
+.bsc-big-quote cite{display:block;margin-top:10px;font-size:10px;color:var(--blue);font-style:normal;font-weight:700}
+.bsc-authors{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:13px 16px}
+.bsc-authors h4{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--amber);margin-bottom:9px}
+.bsc-author-item{display:flex;gap:9px;align-items:flex-start;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.07)}
+.bsc-author-item:last-child{border-bottom:none}
+.bsc-author-item .yr{font-size:11px;font-weight:700;color:var(--blue);flex-shrink:0;width:36px}
+.bsc-author-item p{font-size:11px;color:rgba(255,255,255,.6);line-height:1.4}
+.bsc-perspectives{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bsc-persp-card{border-radius:8px;padding:13px 15px;display:flex;flex-direction:column}
+.bsc-persp-card.fin{background:rgba(58,125,68,.25);border:1px solid rgba(58,125,68,.4)}
+.bsc-persp-card.cli{background:rgba(66,133,244,.2);border:1px solid rgba(66,133,244,.35)}
+.bsc-persp-card.proc{background:rgba(212,130,10,.2);border:1px solid rgba(212,130,10,.35)}
+.bsc-persp-card.aprend{background:rgba(232,114,42,.18);border:1px solid rgba(232,114,42,.32)}
+.bsc-persp-icon{font-size:20px;margin-bottom:5px}
+.bsc-persp-name{font-size:13px;font-weight:700;color:white;margin-bottom:3px}
+.bsc-persp-q{font-size:11px;color:rgba(255,255,255,.6);font-style:italic;line-height:1.4;margin-bottom:5px}
+.bsc-persp-link{font-size:10px;color:var(--blue);font-weight:600}
+
+/* S16 BSC método */
+.bsc-method-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;flex:1}
+.bsc-step-card{background:white;border-radius:10px;box-shadow:0 3px 14px rgba(26,34,70,.07);overflow:hidden}
+.bsc-step-header{background:var(--navy);padding:11px 15px;display:flex;align-items:center;gap:9px}
+.bsc-step-num{width:24px;height:24px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;flex-shrink:0}
+.bsc-step-title{font-size:13px;font-weight:700;color:white}
+.bsc-step-body{padding:13px 15px}
+.bsc-step-body p{font-size:12px;color:var(--gray-txt);line-height:1.5;margin-bottom:8px}
+.bsc-step-body ul{list-style:none;padding:0}
+.bsc-step-body ul li{font-size:11px;color:var(--gray-txt);padding:3px 0 3px 13px;position:relative;border-bottom:1px dotted var(--gray-lt);line-height:1.45}
+.bsc-step-body ul li:last-child{border-bottom:none}
+.bsc-step-body ul li::before{content:'→';position:absolute;left:0;color:var(--navy);font-size:10px}
+.bsc-context-box{background:var(--navy);color:white;border-radius:10px;padding:14px 18px;margin-top:14px;font-size:12.5px;line-height:1.6}
+.bsc-context-box strong{color:var(--blue)}
+
+/* S17 BSC métricas — simplificado sin targets */
+.bsc-simple-table{width:100%;border-collapse:collapse;background:white;border-radius:10px;overflow:hidden;box-shadow:0 3px 14px rgba(26,34,70,.08);margin-top:16px;font-size:12.5px}
+.bsc-simple-table thead th{background:var(--navy);color:white;padding:10px 14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;text-align:left}
+.bsc-simple-table tbody td{padding:9px 14px;border-bottom:1px solid var(--gray-lt);vertical-align:middle;color:var(--gray-txt);line-height:1.4}
+.bsc-simple-table tbody tr:last-child td{border-bottom:none}
+.bsc-simple-table tbody tr:nth-child(even){background:#fafbfd}
+.bsc-simple-table td:first-child{font-weight:700;font-size:11px;color:var(--navy)}
+.bsc-pr-row td{background:var(--navy)!important;color:white!important;font-weight:700!important;font-size:10px!important;text-transform:uppercase;letter-spacing:.6px;padding:7px 14px!important}
+.bsc-pr-row.fin td{background:#1a4d2a!important}
+.bsc-pr-row.cli td{background:#1a3060!important}
+.bsc-pr-row.proc td{background:#4d3000!important}
+.bsc-pr-row.aprend td{background:#4d2000!important}
+.bsc-footnote{font-size:11px;color:var(--gray-txt);margin-top:10px;font-style:italic;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="deck">
+
+<!-- S1 PORTADA -->
+<div class="slide active" id="s1">
+  <div class="s1-accent"></div>
+  <div class="s1-eye">Bracker SpA · Comité de Liderazgo · Junio 2026</div>
+  <h1 class="s1-title">Propuesta de Valor:<br>¿qué le entregamos<br>al mercado?</h1>
+  <p class="s1-sub">Base estratégica para el crecimiento comercial del área</p>
+  <div class="s1-meta">
+    <div><div class="s1-ml">Preparado por</div><div class="s1-mv">Nora Cárcamo · Jefe Comercial</div></div>
+    <div><div class="s1-ml">Fuente principal</div><div class="s1-mv">Tesis MBA + 4 entrevistas en profundidad</div></div>
+    <div><div class="s1-ml">Próximo paso</div><div class="s1-mv">Validación con 5 clientes clave</div></div>
+  </div>
+  <div class="index-grid">
+    <div class="index-block" onclick="goToSlide(1)">
+      <div class="index-block-label">Sección 1</div>
+      <div class="index-block-title">Propuesta de Valor</div>
+      <div class="index-block-slides">Slides 2–13 · Canvas · Competidores · Referentes</div>
+      <div class="index-block-arrow">→</div>
+    </div>
+    <div class="index-block" onclick="goToSlide(13)">
+      <div class="index-block-label">Sección 2</div>
+      <div class="index-block-title">Balanced Scorecard</div>
+      <div class="index-block-slides">Slides 15–17 · Marco teórico · Metodología · Métricas</div>
+      <div class="index-block-arrow">→</div>
+    </div>
+  </div>
+  <div class="s1-logo-box">
+    <div class="s1-logo">B<span>R</span>ACKER</div>
+    <div class="s1-logo-sub">SpA · Chile · Colombia</div>
+  </div>
+</div>
+
+<!-- S2 FUENTE -->
+<div class="slide" id="s2">
+  <span class="section-label">Metodología</span>
+  <div class="slide-pad">
+    <h2 class="slide-title">¿De dónde viene este análisis?</h2>
+    <p class="slide-sub">Información primaria y secundaria combinadas</p>
+    <div class="source-grid">
+      <div class="source-card">
+        <div class="source-icon">📄</div>
+        <h3>Tesis MBA · 2023</h3>
+        <p>Plan estratégico para la Unidad Proceso. Incluye Business Model Canvas, análisis de competidores, FODA y BSC proyectado a 5 años.</p>
+      </div>
+      <div class="source-card b">
+        <div class="source-icon">🎙</div>
+        <h3>4 entrevistas en profundidad</h3>
+        <p>Clientes actuales de Nestlé, Watts y Prolesur. Perfiles: comprador estratégico, ingeniero de proyectos Sr., jefe de proyecto de planta y gerente técnico.</p>
+      </div>
+      <div class="source-card c">
+        <div class="source-icon">🌐</div>
+        <h3>Investigación de mercado · 2026</h3>
+        <p>Web corporativa Bracker + sitios de MT Ideas, BiaConsult, Tecnoproductos e Ivarson Inc. actualizados a junio 2026.</p>
+      </div>
+    </div>
+    <div class="legend-row">
+      <strong style="font-size:11px;color:var(--navy)">Convención:</strong>
+      <div class="leg"><div class="leg-dot" style="background:var(--navy)"></div><span>Texto normal = textual de la tesis o entrevistas</span></div>
+      <div class="leg"><div class="leg-dot" style="background:var(--blue)"></div><span style="color:var(--blue);font-style:italic">Cursiva azul = extrapolado a las 3 unidades o a Bracker como un todo</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- S4 DOLORES — contraste mejorado -->
+<div class="slide" id="s4">
+  <span class="section-label" style="color:rgba(255,255,255,.4)">Voz del Cliente</span>
+  <div style="padding:32px 48px 44px;display:flex;flex-direction:column;flex:1">
+    <h2 class="slide-title">¿Qué les quita el sueño?</h2>
+    <p class="slide-sub">Dolores identificados en entrevistas con Nestlé, Watts y Prolesur</p>
+    <div class="pains-grid">
+      <div class="pain-card"><div class="pain-num">01</div><div class="pain-text">Paradas no planificadas y tiempos muertos de producción</div><div class="pain-source">Textual · entrevistas 2023</div></div>
+      <div class="pain-card"><div class="pain-num">02</div><div class="pain-text">Contaminación que afecta la inocuidad y calidad del producto</div><div class="pain-source">Textual · entrevistas 2023</div></div>
+      <div class="pain-card"><div class="pain-num">03</div><div class="pain-text">Mermas en el proceso y pérdidas por calidad deficiente</div><div class="pain-source">Textual · entrevistas 2023</div></div>
+      <div class="pain-card"><div class="pain-num">04</div><div class="pain-text">Obsolescencia tecnológica de sistemas de control</div><div class="pain-source">Textual · entrevistas 2023</div></div>
+      <div class="pain-card"><div class="pain-num">05</div><div class="pain-text">Rigidez de línea: incapacidad de ajustarse a nuevas recetas</div><div class="pain-source">Textual · entrevistas 2023</div></div>
+      <div class="pain-card"><div class="pain-num">06</div><div class="pain-text">Falta de personal técnico calificado disponible localmente</div><div class="pain-source">Textual · señalado como brecha de Bracker</div></div>
+      <div class="pain-card ext"><div class="pain-num">07</div><div class="pain-text">Plazos de entrega largos e inciertos — 8 a 12+ meses</div><div class="pain-source" style="color:rgba(255,255,255,.35)">Extrapolado · sección 4.1 tesis</div></div>
+      <div class="pain-card ext"><div class="pain-num">08</div><div class="pain-text">Asesoría percibida como sesgada por motivación comercial</div><div class="pain-source" style="color:rgba(255,255,255,.35)">Extrapolado · sección 5.4.5 tesis</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- S5 GANANCIAS -->
+<div class="slide" id="s5">
+  <span class="section-label">Voz del Cliente</span>
+  <div class="slide-pad">
+    <h2 class="slide-title">¿Qué esperan de un proveedor?</h2>
+    <p class="slide-sub">Atributos mencionados espontáneamente en entrevistas — en sus propias palabras</p>
+    <div class="gains-grid">
+      <div class="gain-card"><div class="gain-icon">🤝</div><div><div class="gain-text">Relaciones de confianza a largo plazo</div><div class="gain-quote">"Pocas veces se hacen negocios con proveedores nuevos."</div></div></div>
+      <div class="gain-card"><div class="gain-icon">🔎</div><div><div class="gain-text">Asesoría objetiva — no sesgada por motivación comercial</div><div class="gain-quote">"Asesorías objetivas desde el punto de vista técnico."</div></div></div>
+      <div class="gain-card"><div class="gain-icon">💡</div><div><div class="gain-text">Proveedor proactivo: propone mejoras sin que se las pidan</div><div class="gain-quote">"Proactivo en proponer mejoras al proceso y ofrecer recomendaciones."</div></div></div>
+      <div class="gain-card"><div class="gain-icon">📡</div><div><div class="gain-text">Comunicación activa y respuesta eficiente a requerimientos</div><div class="gain-quote">"Dar respuesta de forma eficiente a los requerimientos."</div></div></div>
+      <div class="gain-card"><div class="gain-icon">✅</div><div><div class="gain-text">Respeto a los acuerdos y plazos pactados</div><div class="gain-quote">"Respeto hacia los acuerdos de entrega y características pactadas."</div></div></div>
+      <div class="gain-card"><div class="gain-icon">🌱</div><div><div class="gain-text">Foco en sustentabilidad y reducción de huella de carbono</div><div class="gain-quote">"Deseable que las soluciones tengan foco en sustentabilidad."</div></div></div>
+      <div class="gain-card"><div class="gain-icon">🏷</div><div><div class="gain-text">Compartir principios y valores corporativos</div><div class="gain-quote">"Compartir principios y valores corporativos."</div></div></div>
+      <div class="gain-card"><div class="gain-icon">🚀</div><div><div class="gain-text">Presentar innovaciones y novedades con frecuencia anual</div><div class="gain-quote">"Presentar innovaciones y novedades con frecuencia anual."</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- S6 VPC -->
+<div class="slide" id="s6">
+  <span class="section-label">Propuesta de Valor</span>
+  <div style="padding:22px 36px 32px;display:flex;flex-direction:column;flex:1">
+    <h2 class="slide-title" style="font-size:22px">Value Proposition Canvas</h2>
+    <p class="slide-sub">Unidad Proceso (base tesis) extrapolado a Bracker completo</p>
+    <div class="vpc-container">
+      <div class="vpc-side">
+        <div class="vpc-side-header client">👤 Perfil del Cliente</div>
+        <div class="vpc-cells">
+          <div class="vpc-cell">
+            <div class="vpc-cell-head jobs"><div class="vpc-badge jobs">⚙</div>Trabajos del cliente</div>
+            <ul>
+              <li class="ext">Mantener continuidad operacional sin paradas</li>
+              <li class="ext">Garantizar inocuidad y calidad del producto final</li>
+              <li class="ext">Modernizar y automatizar líneas de producción</li>
+              <li class="ext">Adaptarse a cambios legislativos o de precios</li>
+              <li class="ext">Proteger la marca y el prestigio de su empresa</li>
+              <li class="ext">Producir con mayor eficiencia energética</li>
+              <li class="ext">Encontrar un proveedor especialista — no generalista</li>
+            </ul>
+          </div>
+          <div class="vpc-cell">
+            <div class="vpc-cell-head pains"><div class="vpc-badge pains">✕</div>Dolores</div>
+            <ul>
+              <li>Paradas no planificadas y tiempos muertos</li>
+              <li>Contaminación que afecta inocuidad</li>
+              <li>Mermas y pérdidas por calidad deficiente</li>
+              <li>Obsolescencia tecnológica</li>
+              <li>Rigidez para ajustarse a nuevas recetas</li>
+              <li>Falta de servicio técnico calificado local</li>
+              <li class="ext">Plazos de entrega largos e inciertos</li>
+              <li class="ext">Asesoría percibida como sesgada</li>
+            </ul>
+          </div>
+          <div class="vpc-cell">
+            <div class="vpc-cell-head gains"><div class="vpc-badge gains">✓</div>Ganancias esperadas</div>
+            <ul>
+              <li>Relaciones de confianza a largo plazo</li>
+              <li>Asesoría objetiva y de calidad — no sesgada comercialmente</li>
+              <li>Un partner, no un vendedor transaccional</li>
+              <li>Proveedor que protege mi marca y prestigio</li>
+              <li>Proveedor proactivo en proponer mejoras</li>
+              <li>Transparencia y aporte real: que los productos hablen por sí solos</li>
+              <li>Comunicación activa y respuesta eficiente</li>
+              <li>Compartir principios y valores corporativos</li>
+              <li>Innovaciones con frecuencia anual</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="vpc-side">
+        <div class="vpc-side-header bracker">🏭 Mapa de Valor · Bracker</div>
+        <div class="vpc-cells">
+          <div class="vpc-cell">
+            <div class="vpc-cell-head prods"><div class="vpc-badge prods">◈</div>Productos y servicios</div>
+            <ul>
+              <li>Representaciones exclusivas de fabricantes europeos calificados</li>
+              <li>Venta directa por personal calificado técnicamente</li>
+              <li>Visitas técnicas y comerciales</li>
+              <li>Capacitaciones a empleados del cliente</li>
+              <li>Asistencia a ferias y congresos</li>
+              <li>Gestión de importación de equipos</li>
+              <li>Apoyo en instalación y puesta en marcha</li>
+              <li>Servicio postventa y garantía (12 meses)</li>
+              <li class="ext">3 unidades: Proceso, Envases y Color</li>
+              <li class="ext">Presencia en Chile y Colombia</li>
+            </ul>
+          </div>
+          <div class="vpc-cell">
+            <div class="vpc-cell-head reliev"><div class="vpc-badge reliev">↓</div>Aliviadores de dolor</div>
+            <ul>
+              <li>Cercanía y conocimiento técnico propio — no meros intermediarios</li>
+              <li>Calidad de asesoría: traductor entre el fabricante y el cliente</li>
+              <li>Confianza y acompañamiento en todo el ciclo del proyecto</li>
+              <li>Visitas técnicas preventivas antes de cada temporada</li>
+              <li class="ext">Interlocutor único con fabricantes europeos para LATAM</li>
+              <li class="ext">Soporte técnico directo: telefónico, remoto y presencial</li>
+            </ul>
+          </div>
+          <div class="vpc-cell">
+            <div class="vpc-cell-head creat"><div class="vpc-badge creat">↑</div>Creadores de ganancia</div>
+            <ul>
+              <li>+200 equipos instalados en Sudamérica</li>
+              <li>+300M personas consumen productos con maquinaria Bracker</li>
+              <li>Exclusividades: acceso a tecnología no disponible de otra forma</li>
+              <li class="ext">+30 años de trayectoria y solidez financiera (desde 1991)</li>
+              <li class="ext">Red de referencias técnicas en la industria regional</li>
+              <li class="ext">Portafolio especializado con profundidad técnica por categoría</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S7 BMC -->
+<div class="slide" id="s7">
+  <span class="section-label">Modelo de Negocio</span>
+  <div style="padding:22px 36px 32px;display:flex;flex-direction:column;flex:1">
+    <h2 class="slide-title" style="font-size:22px">Business Model Canvas · Bracker SpA</h2>
+    <p class="slide-sub">Unidad Proceso (fuente: tesis) — <em style="color:var(--blue)">cursiva = extrapolado a Bracker completo</em></p>
+    <div class="bmc-wrap">
+      <div class="bmc-row">
+        <div class="bmc-cell bmc-kp" style="flex:1.2"><div class="bmc-icon">🤝</div><div class="bmc-label">Socios Clave</div><ul class="bmc-content"><li>Socios comerciales (fabricantes)</li><li>Empleados y equipos internos</li><li>Cámaras de comercio</li><li>Bancos y forwarders</li></ul></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:3px">
+          <div class="bmc-cell bmc-ka" style="flex:1"><div class="bmc-icon">⚙️</div><div class="bmc-label">Actividades Clave</div><ul class="bmc-content"><li>Visitas técnicas y comerciales</li><li>Capacitaciones a clientes</li><li>Ferias y congresos</li><li>Importación y puesta en marcha</li></ul></div>
+          <div class="bmc-cell bmc-kr" style="flex:1"><div class="bmc-icon">💎</div><div class="bmc-label">Recursos Clave</div><ul class="bmc-content"><li>Representaciones exclusivas</li><li>Empleados y conocimiento técnico</li><li>Capital de trabajo</li><li class="ext">Red en Chile y Colombia</li></ul></div>
+        </div>
+        <div class="bmc-cell bmc-vp" style="flex:1.5"><div class="bmc-icon">✨</div><div class="bmc-label">Propuesta de Valor</div><ul class="bmc-content"><li>Equipos de alta calidad y confiabilidad</li><li>Estándares europeos: eficiencia y automatización</li><li>Cercanía y conocimiento técnico local</li><li>Confianza y asesoría en todo el ciclo</li><li class="ext">Asesoría objetiva, no sesgada</li></ul></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:3px">
+          <div class="bmc-cell bmc-cr" style="flex:1"><div class="bmc-icon">💬</div><div class="bmc-label">Relación con Clientes</div><ul class="bmc-content"><li>Relación personal y directa</li><li>Confianza a largo plazo</li><li>Acompañamiento todo el ciclo</li></ul></div>
+          <div class="bmc-cell bmc-ch" style="flex:1"><div class="bmc-icon">📡</div><div class="bmc-label">Canales</div><ul class="bmc-content"><li>Venta directa presencial</li><li>Email · LinkedIn</li><li>Ferias internacionales</li></ul></div>
+        </div>
+        <div class="bmc-cell bmc-cs" style="flex:1.2"><div class="bmc-icon">🏭</div><div class="bmc-label">Segmento de Clientes</div><ul class="bmc-content"><li>Medianas y grandes empresas alimentos</li><li>Quesos procesados · mantequilla · margarina</li><li class="ext">Productores de envases plásticos</li><li class="ext">Industria gráfica (Color)</li><li>Chile, Colombia y LATAM</li></ul></div>
+      </div>
+      <div class="bmc-row bmc-row-bottom">
+        <div class="bmc-cell bmc-cost" style="flex:1"><div class="bmc-label">💸 Estructura de Costos</div><ul class="bmc-content"><li>Salarios y operación oficina</li><li>Viajes y visitas comerciales</li><li>Ferias · marketing · web</li><li>Importación y logística</li></ul></div>
+        <div class="bmc-cell bmc-rev" style="flex:1"><div class="bmc-label">💰 Fuentes de Ingreso</div><ul class="bmc-content"><li>Venta directa: factura Bracker con margen</li><li>Venta indirecta: comisión del fabricante</li><li>Anticipo + pago final con entrega conforme</li><li class="ext">Futura: contratos de mantenimiento</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S8 INSIGHTS -->
+<div class="slide" id="s8">
+  <span class="section-label">Insights</span>
+  <div class="slide-pad">
+    <h2 class="slide-title">Lo que los clientes dijeron<br>y no está en el canvas</h2>
+    <p class="slide-sub">4 insights textuales de entrevistas que no quedaron capturados en el BMC original</p>
+    <div class="insights-grid-slide">
+      <div class="ins-card"><div class="ins-tag">Insight 01 · Canal de llegada</div><div class="ins-title">El boca a boca técnico es la puerta de entrada</div><div class="ins-body">El proceso para incorporar un proveedor nuevo parte casi siempre de una recomendación entre pares técnicos — no de búsqueda activa ni publicidad.</div><div class="ins-quote">"Las recomendaciones realizadas por profesionales del rubro son la fuente principal para considerar un nuevo proveedor."</div></div>
+      <div class="ins-card"><div class="ins-tag">Insight 02 · Relación con proveedor</div><div class="ins-title">El cliente no quiere quedar atrapado</div><div class="ins-body">Aunque valoran las relaciones largas, señalan explícitamente que evitan la dependencia excesiva. Bracker debe construir su propuesta como asocio — no como exclusividad que genera dependencia.</div><div class="ins-quote">"Evitan la dependencia excesiva hacia algún proveedor, promoviendo la libre competencia."</div></div>
+      <div class="ins-card"><div class="ins-tag">Insight 03 · Riesgo de diversificación</div><div class="ins-title">Diversificarse puede costar credibilidad técnica</div><div class="ins-body">Al presentar las 3 unidades juntas, los clientes señalan un riesgo real: que Bracker sea percibido como generalista y pierda la credibilidad técnica específica que genera confianza.</div><div class="ins-quote">"Diversificarse mucho puede conllevar a perder credibilidad técnica y mostrar falta de experiencia."</div></div>
+      <div class="ins-card"><div class="ins-tag">Insight 04 · Portafolio</div><div class="ins-title">Piden portafolio complementario, no diversificación</div><div class="ins-body">Los clientes piden ampliar representaciones dentro de la misma lógica industrial — más profundidad donde ya confían, no categorías nuevas que no dominan.</div><div class="ins-quote">"Incluir dentro de los socios comerciales de Bracker equipos industriales complementarios."</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- S9 BRECHAS -->
+<div class="slide" id="s9">
+  <span class="section-label">Análisis de Brechas</span>
+  <div style="padding:28px 44px 40px;display:flex;flex-direction:column;flex:1;min-height:min-content">
+    <h2 class="slide-title">¿Estamos comunicando lo que importa?</h2>
+    <p class="slide-sub">Lo que Bracker dice hoy vs. lo que el cliente declara que valora</p>
+    <table class="gap-table-slide">
+      <thead><tr><th style="width:110px">Dimensión</th><th>Lo que Bracker comunica hoy</th><th>Lo que el cliente valora (textual)</th><th style="width:130px">Brecha</th></tr></thead>
+      <tbody>
+        <tr><td>Lenguaje</td><td>"Maquinaria de vanguardia" · "Soluciones integrales"</td><td>Continuidad operacional · reducción de mermas · eficiencia del proceso</td><td><span class="badge-alta">Alta</span><br><small style="color:var(--gray-txt)">Habla de producto, no de resultado</small></td></tr>
+        <tr><td>Asesoría</td><td>No declarado en web ni materiales externos</td><td>"Asesorías objetivas desde el punto de vista técnico y no sesgadas por motivación comercial"</td><td><span class="badge-alta">Alta</span><br><small style="color:var(--gray-txt)">Señalado como mejora directa en Bracker</small></td></tr>
+        <tr><td>Modelo de relación</td><td>"Representante comercial" — rol transaccional implícito</td><td>"Un partner, no un vendedor transaccional"</td><td><span class="badge-alta">Alta</span><br><small style="color:var(--gray-txt)">El cliente distingue explícitamente entre partner y vendedor</small></td></tr>
+        <tr><td>Evidencia / demo</td><td>Comunicación basada en promesas y portafolio</td><td>"Pocos dejan que sus productos hablen por sí solos. Dar un demo."</td><td><span class="badge-alta">Alta</span><br><small style="color:var(--gray-txt)">No hay estrategia de evidencia o demo documentada</small></td></tr>
+        <tr><td>Serv. técnico / postventa</td><td>Página de postventa existe pero en sección secundaria. Lenguaje centrado en los servicios de Bracker, no en el resultado del cliente</td><td>"Soporte técnico y postventa para mantener la producción y confiabilidad" — mencionado por los 4 entrevistados</td><td><span class="badge-media">Media</span><br><small style="color:var(--gray-txt)">Existe y se comunica — pero sin la prominencia ni el lenguaje de resultado que el cliente espera</small></td></tr>
+        <tr><td>Relación</td><td>"Representantes exclusivos" — centrado en el fabricante</td><td>"Relaciones de confianza a largo plazo" · "Compartir valores"</td><td><span class="badge-media">Media</span><br><small style="color:var(--gray-txt)">En el BMC pero no en comunicación externa</small></td></tr>
+        <tr><td>Solidez financiera</td><td>+30 años en web y en PPT comerciales</td><td>"Espalda financiera" como atributo de proveedor confiable</td><td><span class="badge-media">Media</span><br><small style="color:var(--gray-txt)">Existe la evidencia, podría comunicarse más activamente</small></td></tr>
+        <tr><td>Transparencia</td><td>Presente en PPT comercial y Pasaporte AHK · ausente en web y valores declarados</td><td>"Ser transparentes. Aporte real a la necesidad."</td><td><span class="badge-media">Media</span><br><small style="color:var(--gray-txt)">Se practica, no se comunica de forma consistente en todos los canales</small></td></tr>
+        <tr><td>Marca del cliente</td><td>No mencionado</td><td>"Buscan proteger su marca y prestigio"</td><td><span class="badge-ausente">Ausente</span><br><small style="color:var(--gray-txt)">No conectamos con el riesgo reputacional del cliente</small></td></tr>
+        <tr><td>Red y reputación</td><td>No mencionado</td><td>"Siempre los proveedores que ha buscado son por recomendación de otro profesional"</td><td><span class="badge-ausente">Ausente</span><br><small style="color:var(--gray-txt)">El canal de llegada no está en la propuesta de valor</small></td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:14px;background:#E8F0FE;border-left:4px solid var(--blue);border-radius:0 8px 8px 0;padding:12px 16px;font-size:12px;color:var(--navy);line-height:1.6">
+      <strong style="color:var(--blue)">💡 Patrón transversal:</strong> La mayoría de estas brechas no son de capacidad — Bracker ya hace gran parte de lo que el cliente valora. Son brechas de comunicación y lenguaje: Bracker habla de sus servicios, los referentes hablan del resultado del cliente. El cambio no es construir algo nuevo, es comunicar lo que ya existe de forma diferente.
+    </div>
+  </div>
+</div>
+
+<!-- S10 WORD CLOUD -->
+<div class="slide" id="s10">
+  <div class="wc-header">
+    <div class="wc-eyebrow">Bracker SpA · Identidad Comercial</div>
+    <div class="wc-title">Las palabras que deben estar en todo lo que hacemos</div>
+    <div class="wc-sub">Fuente: entrevistas clientes (tesis 2023) · Propósito, Misión, Visión y Valores Bracker (web 2026)</div>
+    <div class="wc-legend">
+      <div class="wc-leg"><div class="wc-dot" style="background:#4285F4"></div>Overlap · entrevistas + Bracker (doble o triple)</div>
+      <div class="wc-leg"><div class="wc-dot" style="background:#5ECC7A"></div>Voz del cliente · tamaño = frecuencia (4 entrevistados = más grande)</div>
+      <div class="wc-leg"><div class="wc-dot" style="background:#F5C842"></div>Solo Bracker · valores, misión y visión</div>
+    </div>
+  </div>
+  <div class="wc-canvas">
+    <!-- 4/4 ENTREVISTADOS + OVERLAP BRACKER → azul, XL -->
+    <span class="word" style="font-size:52px;left:50%;top:44%;color:#4285F4;font-weight:800">Confianza</span>
+    <span class="word" style="font-size:44px;left:27%;top:62%;color:#4285F4;font-weight:800">Calidad</span>
+
+    <!-- 4/4 ENTREVISTADOS, sin overlap Bracker declarado → verde, XL -->
+    <span class="word" style="font-size:40px;left:74%;top:30%;color:#5ECC7A;font-weight:800">Servicio técnico</span>
+    <span class="word" style="font-size:38px;left:18%;top:34%;color:#5ECC7A;font-weight:800">Largo plazo</span>
+
+    <!-- OVERLAP cliente + Bracker (misión/propósito) → azul -->
+    <span class="word" style="font-size:30px;left:44%;top:22%;color:#4285F4">Asesoría</span>
+    <span class="word" style="font-size:26px;left:70%;top:55%;color:#4285F4">Valor</span>
+    <span class="word" style="font-size:22px;left:56%;top:10%;color:#4285F4">Soluciones integrales</span>
+    <span class="word" style="font-size:20px;left:80%;top:44%;color:#4285F4">Transparencia</span>
+    <span class="word" style="font-size:18px;left:36%;top:74%;color:#4285F4">Crecimiento</span>
+
+    <!-- 2/4 ENTREVISTADOS, sin overlap → verde, M -->
+    <span class="word" style="font-size:24px;left:8%;top:52%;color:#5ECC7A">Confiabilidad</span>
+    <span class="word" style="font-size:23px;left:88%;top:22%;color:#5ECC7A">Recomendación</span>
+    <span class="word" style="font-size:22px;left:10%;top:72%;color:#5ECC7A">Asesoría objetiva</span>
+    <span class="word" style="font-size:21px;left:62%;top:83%;color:#5ECC7A">Especialización</span>
+    <span class="word" style="font-size:20px;left:30%;top:84%;color:#5ECC7A">Proactividad</span>
+    <span class="word" style="font-size:20px;left:88%;top:64%;color:#5ECC7A">Cercanía</span>
+    <span class="word" style="font-size:19px;left:5%;top:38%;color:#5ECC7A">Sustentabilidad</span>
+    <span class="word" style="font-size:18px;left:50%;top:90%;color:#5ECC7A">Inocuidad</span>
+    <span class="word" style="font-size:18px;left:4%;top:86%;color:#5ECC7A">Respeto a acuerdos</span>
+
+    <!-- 1/4 ENTREVISTADOS, sin overlap → verde, S -->
+    <span class="word" style="font-size:16px;left:92%;top:38%;color:#5ECC7A">Partner</span>
+    <span class="word" style="font-size:15px;left:68%;top:14%;color:#5ECC7A">Innovación anual</span>
+    <span class="word" style="font-size:15px;left:22%;top:92%;color:#5ECC7A">Calidad de asesoría</span>
+    <span class="word" style="font-size:14px;left:76%;top:92%;color:#5ECC7A">Evidencia / demo</span>
+    <span class="word" style="font-size:14px;left:4%;top:20%;color:#5ECC7A">Alineación valórica</span>
+    <span class="word" style="font-size:13px;left:92%;top:78%;color:#5ECC7A">Espalda financiera</span>
+
+    <!-- SOLO BRACKER (valores + misión/visión) → naranja -->
+    <span class="word" style="font-size:18px;left:84%;top:8%;color:#F5C842">Socio estratégico</span>
+    <span class="word" style="font-size:16px;left:6%;top:8%;color:#F5C842">Referente LATAM</span>
+    <span class="word" style="font-size:15px;left:46%;top:4%;color:#F5C842">Compromiso</span>
+    <span class="word" style="font-size:14px;left:78%;top:76%;color:#F5C842">Tecnología</span>
+    <span class="word" style="font-size:13px;left:3%;top:62%;color:#F5C842">Pasión</span>
+    <span class="word" style="font-size:13px;left:56%;top:96%;color:#F5C842">Excelencia operativa</span>
+  </div>
+  <div class="wc-panels">
+    <div class="wc-panel cli"><h4>🔵 Overlap cliente + Bracker</h4><p>Confianza · Calidad · Valor · Asesoría · Soluciones integrales · Crecimiento · Transparencia<br><small style="opacity:.7">Transparencia aparece en entrevistas y en materiales comerciales Bracker (AHK), no en web — brecha de consistencia</small></p></div>
+    <div class="wc-panel val"><h4>🟢 Voz del cliente (entrevistas)</h4><p>Servicio técnico · Largo plazo · Confiabilidad · Recomendación · Asesoría objetiva · Proactividad · Cercanía · Sustentabilidad · Especialización · Inocuidad · Respeto a acuerdos · Partner · Innovación anual · Calidad de asesoría · Evidencia/demo · Alineación valórica · Espalda financiera</p></div>
+    <div class="wc-panel mv"><h4>🟡 Solo Bracker · valores, misión y visión</h4><p><em>Valores:</em> Pasión · Compromiso<br><em>Misión/Visión:</em> Socio estratégico · Referente LATAM · Tecnología · Excelencia operativa</p></div>
+  </div>
+</div>
+
+<!-- S11 AGRADABLEMENTE DIFERENTE -->
+<div class="slide" id="s11">
+  <div class="ad-eyebrow">Insight para el Comité</div>
+  <div class="ad-question">¿En qué dimensión concreta<br>Bracker quiere ser<br><em>agradablemente diferente</em>?</div>
+  <div class="ad-cards">
+    <div class="ad-card"><div class="ad-card-no">✕ No es...</div><p>La tecnología. Los fabricantes europeos son la condición de entrada — todos los actores del mercado ofrecen tecnología comparable.</p></div>
+    <div class="ad-card"><div class="ad-card-yes">✓ Es...</div><p>La forma en que Bracker acompaña el proyecto. Asesoría objetiva, soporte técnico local, relación personal en todo el ciclo de vida.</p></div>
+    <div class="ad-card"><div class="ad-card-yes">→ Pregunta</div><p>¿Puede Bracker ser el proveedor que el cliente recomienda a un colega sin dudar? <strong style="color:var(--blue)">Ese es el diferenciador.</strong></p></div>
+  </div>
+</div>
+
+<!-- S12 MT IDEAS -->
+<div class="slide" id="s12">
+  <span class="section-label">Competidores Directos</span>
+  <div style="padding:28px 48px 40px;display:flex;flex-direction:column;flex:1">
+    <h2 class="slide-title">MT Ideas · Argentina</h2>
+    <p class="slide-sub">Competidor directo — mayor estructura regional, algunos socios comunes, opera también en Chile y Colombia</p>
+    <div class="comp-slide-layout">
+      <div class="comp-identity">
+        <div class="comp-name">MT Ideas</div>
+        <div class="comp-origin">Buenos Aires, Argentina · mtideas.com</div>
+        <span class="comp-type-pill pill-comp">Competidor directo</span>
+        <div class="comp-prop-quote">"Trabajamos junto a nuestros clientes escuchando sus necesidades y requerimientos específicos. Nuestro staff de técnicos e ingenieros ejecutan el diseño e implementación en cada proyecto, dejando una huella de responsabilidad y compromiso."</div>
+        <ul class="comp-points-slide">
+          <li>"Único canal oficial de venta de equipos y repuestos SPX FLOW / Gerstenberg Schröder para toda la región"</li>
+          <li>"Servicios y asesoramiento realizado por técnicos especializados" — programa de mantenimiento preventivo</li>
+          <li>"Control automático de procesos productivos y CIP · Gestión integral de recetas, reportes y procesos · Integración a softwares de gestión ERP"</li>
+          <li>Portafolio amplio más allá de SPX/GS — múltiples representaciones en su web</li>
+        </ul>
+      </div>
+      <div class="comp-highlight">
+        <div class="highlight-title">¿Qué están haciendo distinto hoy?</div>
+        <div class="highlight-item danger">
+          <h4>🚨 MT Ideas Américas — movimiento nuevo (2025–26)</h4>
+          <p>Crearon una entidad regional con <strong>stock propio de repuestos, logística e ingeniería</strong>. Su programa de servicio estructurado (repuestos originales, mantenimiento preventivo, actualización tecnológica, automatización) está declarado explícitamente para la línea SPX/GS.</p>
+        </div>
+        <div class="highlight-item">
+          <h4>Exclusividad regional activa y comunicada</h4>
+          <p>"Cualquier otro proveedor con nombres similares son alternativos sin garantía oficial de Gerstenberg Schröder." — Lenguaje defensivo pero efectivo para proteger mercado.</p>
+        </div>
+        <div class="highlight-item" style="border-left-color:var(--amber)">
+          <h4>⚠ Por verificar</h4>
+          <p>Su estructura de servicio (repuestos, mantenimiento preventivo, automatización) aparece declarada para SPX/GS. ¿Es transversal a todas sus representaciones o específica de esa exclusividad?</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S13 BIACONSULT -->
+<div class="slide" id="s13">
+  <span class="section-label">Competidores Directos</span>
+  <div style="padding:28px 48px 40px;display:flex;flex-direction:column;flex:1">
+    <h2 class="slide-title">BiaConsult · Argentina</h2>
+    <p class="slide-sub">Competidor directo — amplio portafolio en industria láctea y de alimentos</p>
+    <div class="comp-slide-layout">
+      <div class="comp-identity">
+        <div class="comp-name">BiaConsult</div>
+        <div class="comp-origin">Villa María, Córdoba · biaconsult.com.ar</div>
+        <span class="comp-type-pill pill-comp">Competidor directo</span>
+        <div class="comp-prop-quote">"Soluciones tecnológicas para una industria que busca la más alta calidad. Asesoramos y proveemos soluciones en: ingredientes, aditivos, insumos, mejoras en procesos existentes, asistencia técnica especializada e implementación de nuevos procesos productivos."</div>
+        <ul class="comp-points-slide">
+          <li>"Solo trabaja con repuestos originales de las marcas representadas... evitando paradas no programadas" — conecta repuestos con continuidad operacional</li>
+          <li>"Equipo de profesionales para asistir en: Procesos · Producción · Proyectos · Upgrade y Mantenimiento"</li>
+          <li>Base histórica: continuación de SOFRAR y Vitalis — pioneras desde los años 70 en la industria láctea argentina</li>
+          <li>Cobertura multiindustria: lácteos, panificación, pet food, bebidas, cereales, packaging</li>
+        </ul>
+      </div>
+      <div class="comp-highlight">
+        <div class="highlight-title">Diferencias clave con Bracker</div>
+        <div class="highlight-item danger">
+          <h4>🧪 Portafolio muy amplio — menor especialización técnica</h4>
+          <p>BiaConsult cubre 10+ industrias distintas. Es el caso real del riesgo que señaló Eduardo Moreno: "tener tantas marcas puede ser contraproducente, buscan especialización."</p>
+        </div>
+        <div class="highlight-item">
+          <h4>Lenguaje de resultado — "evitando paradas no programadas"</h4>
+          <p>BiaConsult conecta sus repuestos directamente con el dolor #1 del cliente. Habla del resultado, no del servicio. Bracker tiene la misma capacidad pero no usa ese lenguaje en su comunicación principal.</p>
+        </div>
+        <div class="highlight-item" style="border-left-color:var(--amber)">
+          <h4>⚠ Por verificar</h4>
+          <p>Declaran asistencia técnica propia en procesos, producción, proyectos, upgrade y mantenimiento. ¿Tienen estructura real detrás o es una promesa sin capacidad instalada?</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S14 REFERENTES -->
+<div class="slide" id="s14">
+  <span class="section-label">Referentes de Modelo</span>
+  <div class="slide-pad">
+    <h2 class="slide-title">¿Cómo lo hacen quienes llevan más camino?</h2>
+    <p class="slide-sub">Representantes regionales con los mismos socios comerciales — qué podemos aprender</p>
+    <div class="ref-grid">
+      <div class="ref-card">
+        <div class="ref-header"><h3>Tecnoproductos (TPS) · México</h3><span>tecnoproductos.com · Referente de modelo</span></div>
+        <div class="ref-body">
+          <div class="ref-quote">"Reduce costos operativos, optimiza el consumo de vapor y energía y elimina desperdicios." · "No se limita a vender equipos — diseña e implementa líneas completas con automatización y control de procesos." · "Adapta cada proyecto a las condiciones reales de operación: tipo de producto, volumen, recursos y objetivos del cliente."</div>
+          <div class="ref-learn">
+            <div class="ref-learn-label">Qué podemos aprender</div>
+            <ul>
+              <li>Habla en lenguaje de resultado del cliente — no de producto ni de catálogo</li>
+              <li>Servicio técnico declarado por socio específico (Natec): acompañamiento desde diagnóstico hasta mantenimiento, inventario estratégico y seguimiento postventa constante</li>
+              <li>Automatización como capa de valor adicional sobre el equipo (PLC, SCADA, trazabilidad propia smartTRACK®)</li>
+              <li>Socios compartidos con Bracker: Natec y Alpma</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="ref-card">
+        <div class="ref-header" style="background:var(--navy)"><h3>Ivarson Inc. · EE.UU.</h3><span>ivarsoninc.com · Referente de modelo</span></div>
+        <div class="ref-body">
+          <div class="ref-quote">"Full-service solutions provider... from raw material inputs to final packaging with the skill required to produce first-class consumer or industrial products." · "Our product knowledge gives customers the best resource for development and long-term strategy." · "An efficient after-sales service organization with high-quality service engineers for maintenance service and spare parts to maintain your equipment's production output and reliability."</div>
+          <div class="ref-learn">
+            <div class="ref-learn-label">Qué podemos aprender</div>
+            <ul>
+              <li>Habla del producto final del cliente y su reputación — "first-class products" conecta con "proteger la marca y prestigio"</li>
+              <li>El mejor modelo de comunicación de postventa: una frase que ancla el servicio en el resultado — "to maintain your equipment's production output and reliability"</li>
+              <li>60+ años de autoridad sin perder especialización — referente de crecimiento sin diversificación</li>
+              <li>Socios compartidos con Bracker: IMA Benhil, Rothenburg, Schäfer & Flottmann, Bock & Sohn, Alpma</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S15 BSC TEORÍA -->
+<div class="slide" id="s15" style="overflow-y:auto">
+  <span class="section-label" style="color:rgba(255,255,255,.4)">Balanced Scorecard · Marco Teórico</span>
+  <div style="padding:28px 44px 40px;display:flex;flex-direction:column;flex:1">
+    <h2 class="slide-title">El Balanced Scorecard:<br>de dónde viene el modelo</h2>
+    <p class="slide-sub">Base teórica aplicada en la tesis MBA · Unidad Proceso · Bracker 2023</p>
+    <div class="bsc-theory-grid">
+      <div class="bsc-quote-panel">
+        <div class="bsc-big-quote">
+          <p>"El Balanced Scorecard proporciona un marco integral que traduce los objetivos estratégicos en un conjunto coherente de indicadores de desempeño. Este sistema puede motivar mejoras innovadoras en áreas tan cruciales como desarrollo de productos, procesos, clientes y mercados."</p>
+          <cite>Kaplan, R. S. &amp; Norton, D. P. (1992) · The Balanced Scorecard — Measures That Drive Performance · Harvard Business Review</cite>
+        </div>
+        <div class="bsc-authors">
+          <h4>Fuentes del modelo</h4>
+          <div class="bsc-author-item"><span class="yr">1992</span><p><strong style="color:white">Kaplan &amp; Norton</strong> · "The Balanced Scorecard — Measures That Drive Performance" · HBR. Primer artículo que introduce el concepto.</p></div>
+          <div class="bsc-author-item"><span class="yr">1996</span><p><strong style="color:white">Kaplan &amp; Norton</strong> · "The Balanced Scorecard: Translating Strategy into Action" · HBSP. Libro que formaliza las 4 perspectivas.</p></div>
+          <div class="bsc-author-item"><span class="yr">2004</span><p><strong style="color:white">Kaplan &amp; Norton</strong> · "Strategy Maps" · Introduce el mapa estratégico como herramienta complementaria.</p></div>
+        </div>
+      </div>
+      <div class="bsc-perspectives">
+        <div class="bsc-persp-card fin"><div class="bsc-persp-icon">💰</div><div class="bsc-persp-name">Perspectiva Financiera</div><div class="bsc-persp-q">"¿Cómo nos ven los accionistas?"</div><div class="bsc-persp-link">Rentabilidad · Facturación · Crecimiento</div></div>
+        <div class="bsc-persp-card cli"><div class="bsc-persp-icon">🤝</div><div class="bsc-persp-name">Perspectiva Clientes</div><div class="bsc-persp-q">"¿Cómo nos ven nuestros clientes?"</div><div class="bsc-persp-link">Satisfacción · Retención · Captación</div></div>
+        <div class="bsc-persp-card proc"><div class="bsc-persp-icon">⚙️</div><div class="bsc-persp-name">Perspectiva Procesos Internos</div><div class="bsc-persp-q">"¿En qué procesos debemos sobresalir?"</div><div class="bsc-persp-link">Eficiencia · Calidad · Innovación</div></div>
+        <div class="bsc-persp-card aprend"><div class="bsc-persp-icon">🌱</div><div class="bsc-persp-name">Aprendizaje y Crecimiento</div><div class="bsc-persp-q">"¿Cómo podemos seguir mejorando?"</div><div class="bsc-persp-link">Capacitación · Satisfacción · Desempeño</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S16 BSC METODOLOGÍA -->
+<div class="slide" id="s16">
+  <span class="section-label">Balanced Scorecard · Aplicación en Tesis</span>
+  <div class="slide-pad">
+    <h2 class="slide-title">¿Cómo se construyó el BSC para Bracker?</h2>
+    <p class="slide-sub">Metodología aplicada en la tesis MBA · Unidad Proceso · 2023</p>
+    <div class="bsc-method-grid">
+      <div class="bsc-step-card">
+        <div class="bsc-step-header"><div class="bsc-step-num">1</div><div class="bsc-step-title">Diagnóstico estratégico</div></div>
+        <div class="bsc-step-body"><p>Evaluación de la situación actual mediante análisis interno y externo.</p><ul><li>Cadena de valor (Porter)</li><li>5 fuerzas de Porter</li><li>Análisis PESTEL · entorno chileno</li><li>Análisis multicriterio de mercados (Chile, ARG, BRA, COL)</li><li>Matriz FODA</li></ul></div>
+      </div>
+      <div class="bsc-step-card">
+        <div class="bsc-step-header"><div class="bsc-step-num">2</div><div class="bsc-step-title">Investigación de clientes</div></div>
+        <div class="bsc-step-body"><p>Entrevistas en profundidad para identificar necesidades reales del segmento.</p><ul><li>4 entrevistas: Nestlé, Watts, Prolesur (×2)</li><li>Perfiles: comprador estratégico, ingeniero Sr., jefe de proyecto, gerente técnico</li><li>Temas: necesidades, proveedores, proceso de compra, relación con Bracker</li><li>Business Model Canvas construido y validado</li></ul></div>
+      </div>
+      <div class="bsc-step-card">
+        <div class="bsc-step-header"><div class="bsc-step-num">3</div><div class="bsc-step-title">Diseño del BSC</div></div>
+        <div class="bsc-step-body"><p>Traducción de objetivos estratégicos en indicadores medibles por perspectiva.</p><ul><li>Mapa estratégico alineado con valores de Bracker</li><li>Estrategia: desarrollo de producto + mercado (Matriz Ansoff)</li><li>KPIs por perspectiva con periodicidad definida</li><li>Targets proyectados a 5 años (2024–2028)</li><li>10 proyectos de mejora asociados</li></ul></div>
+      </div>
+    </div>
+    <div class="bsc-context-box"><strong>Contexto:</strong> El BSC fue diseñado para la Unidad Proceso en 2023 — solo Chile, un KAM. <strong>Hoy el scope es distinto:</strong> 3 unidades, Chile + Colombia, equipo de 4 personas. Las métricas son punto de partida para una actualización, no un destino fijo.</div>
+  </div>
+</div>
+
+<!-- S17 BSC MÉTRICAS — solo métrica, perspectiva, periodicidad -->
+<div class="slide" id="s17" style="overflow-y:auto">
+  <span class="section-label">Balanced Scorecard · Métricas</span>
+  <div style="padding:24px 44px 36px;display:flex;flex-direction:column;flex:1">
+    <h2 class="slide-title">BSC Unidad Proceso · Métricas e indicadores</h2>
+    <p class="slide-sub">Fuente: Tesis MBA Nora Cárcamo Rojas, 2023 · Tablas 6 y 7</p>
+    <table class="bsc-simple-table">
+      <thead><tr><th>Perspectiva</th><th>Métrica</th><th>Periodicidad</th></tr></thead>
+      <tbody>
+        <tr class="bsc-pr-row fin"><td colspan="3">💰 Financiera — "¿Cómo nos ven los accionistas?"</td></tr>
+        <tr><td>Financiera</td><td>Valor maquinaria vendida (MM EUR)</td><td>Trimestral</td></tr>
+        <tr><td>Financiera</td><td>Facturación Bracker (MM CLP)</td><td>Trimestral</td></tr>
+        <tr><td>Financiera</td><td>Rentabilidad (%EBITDA)</td><td>Trimestral</td></tr>
+        <tr class="bsc-pr-row cli"><td colspan="3">🤝 Clientes — "¿Cómo nos ven nuestros clientes?"</td></tr>
+        <tr><td>Clientes</td><td>% Satisfacción de cliente</td><td>Anual</td></tr>
+        <tr><td>Clientes</td><td>N° oportunidades activas con clientes nuevos</td><td>Trimestral</td></tr>
+        <tr><td>Clientes</td><td>N° oportunidades activas total</td><td>Mensual</td></tr>
+        <tr><td>Clientes</td><td>N° clientes nuevos adjudicados</td><td>Anual</td></tr>
+        <tr class="bsc-pr-row proc"><td colspan="3">⚙️ Procesos Internos — "¿En qué procesos debemos sobresalir?"</td></tr>
+        <tr><td>Procesos</td><td>% Cumplimiento de procedimientos</td><td>Semestral</td></tr>
+        <tr><td>Procesos</td><td>% Procesos documentados y actualizados</td><td>Anual</td></tr>
+        <tr><td>Procesos</td><td>Proyectos de innovación ejecutados</td><td>Anual</td></tr>
+        <tr class="bsc-pr-row aprend"><td colspan="3">🌱 Aprendizaje y Crecimiento — "¿Cómo podemos seguir mejorando?"</td></tr>
+        <tr><td>Aprendizaje</td><td>Horas de capacitación por persona</td><td>Semestral</td></tr>
+        <tr><td>Aprendizaje</td><td>Satisfacción interna del personal</td><td>Anual</td></tr>
+        <tr><td>Aprendizaje</td><td>Evaluación de desempeño realizada</td><td>Anual</td></tr>
+      </tbody>
+    </table>
+    <p class="bsc-footnote">Diseñado para Unidad Proceso (Chile) · 2023. Pendiente: actualizar con resultados reales 2024–2025 y ampliar scope a 3 unidades + Colombia.</p>
+  </div>
+</div>
+
+</div><!-- .deck -->
+
+<div class="nav">
+  <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)" disabled>‹</button>
+  <span class="nav-counter" id="counter">1 / 16</span>
+  <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">›</button>
+</div>
+
+<script>
+const slides=document.querySelectorAll('.slide');
+let cur=0;
+const total=slides.length;
+function changeSlide(dir){
+  slides[cur].classList.remove('active');
+  cur=Math.max(0,Math.min(total-1,cur+dir));
+  slides[cur].classList.add('active');
+  document.getElementById('counter').textContent=(cur+1)+' / '+total;
+  document.getElementById('prevBtn').disabled=cur===0;
+  document.getElementById('nextBtn').disabled=cur===total-1;
+}
+function goToSlide(idx){
+  slides[cur].classList.remove('active');
+  cur=Math.min(total-1,idx);
+  slides[cur].classList.add('active');
+  document.getElementById('counter').textContent=(cur+1)+' / '+total;
+  document.getElementById('prevBtn').disabled=cur===0;
+  document.getElementById('nextBtn').disabled=cur===total-1;
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown')changeSlide(1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')changeSlide(-1);
+});
+</script>
+<div class="slide-stripe"></div>
+</body>
+</html>
