@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Metodologías de Fidelización — Análisis para Bracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #1A2246;
+    --blue: #4285F4;
+    --white: #FFFFFF;
+    --gray-light: #EEEEEE;
+    --gray-text: #595959;
+    --green: #2E7D32;
+    --green-bg: #E8F5E9;
+    --amber: #E65100;
+    --amber-bg: #FFF3E0;
+    --red: #B71C1C;
+    --red-bg: #FFEBEE;
+  }
+
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background: var(--gray-light);
+    color: var(--navy);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--navy);
+    padding: 36px 48px 28px;
+    border-bottom: 3px solid var(--blue);
+  }
+  .header-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--white);
+    line-height: 1.3;
+    max-width: 680px;
+  }
+  .header-meta {
+    margin-top: 14px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    font-weight: 400;
+  }
+  .header-meta span { color: rgba(255,255,255,0.75); font-weight: 600; }
+
+  /* TABS */
+  .tabs-bar {
+    background: var(--navy);
+    padding: 0 48px;
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .tab-btn {
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: rgba(255,255,255,0.45);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 14px 20px 12px;
+    cursor: pointer;
+    transition: all 0.18s;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { color: rgba(255,255,255,0.8); }
+  .tab-btn.active {
+    color: var(--white);
+    border-bottom-color: var(--blue);
+  }
+
+  /* CONTENT */
+  .content { padding: 40px 48px 64px; max-width: 1100px; margin: 0 auto; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 6px;
+  }
+  .section-desc {
+    font-size: 13px;
+    color: var(--gray-text);
+    margin-bottom: 28px;
+    max-width: 680px;
+    line-height: 1.6;
+  }
+
+  /* CHIPS */
+  .chip {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+  .chip-green { background: var(--green-bg); color: var(--green); }
+  .chip-amber { background: var(--amber-bg); color: var(--amber); }
+  .chip-red { background: var(--red-bg); color: var(--red); }
+
+  /* ===================== PARTE 1: TABLA ===================== */
+  .diag-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--white);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(26,34,70,0.07);
+  }
+  .diag-table thead tr {
+    background: var(--navy);
+  }
+  .diag-table th {
+    text-align: left;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    padding: 13px 18px;
+  }
+  .diag-table tbody tr {
+    border-bottom: 1px solid var(--gray-light);
+    transition: background 0.12s;
+  }
+  .diag-table tbody tr:last-child { border-bottom: none; }
+  .diag-table tbody tr:hover { background: #f5f7ff; }
+  .diag-table td {
+    padding: 15px 18px;
+    vertical-align: top;
+    font-size: 12.5px;
+    line-height: 1.55;
+  }
+  .method-name {
+    font-weight: 700;
+    color: var(--navy);
+    font-size: 13px;
+    margin-bottom: 3px;
+  }
+  .method-source {
+    font-size: 11px;
+    color: var(--gray-text);
+    font-style: italic;
+  }
+  .eval-text {
+    color: var(--gray-text);
+    font-size: 12px;
+    line-height: 1.55;
+  }
+
+  /* ===================== PARTE 2: CARDS ===================== */
+  .cards-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .method-card {
+    background: var(--white);
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(26,34,70,0.07);
+    overflow: hidden;
+  }
+  .card-header {
+    background: var(--navy);
+    padding: 18px 24px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .card-header-left { flex: 1; }
+  .card-number {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--blue);
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+  .card-source {
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    font-style: italic;
+  }
+  .card-body {
+    padding: 22px 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .card-col { }
+  .card-col-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 8px;
+  }
+  .card-col p {
+    font-size: 12.5px;
+    color: var(--navy);
+    line-height: 1.65;
+  }
+  .card-output {
+    padding: 0 24px 22px;
+  }
+  .card-output-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--gray-text);
+    margin-bottom: 8px;
+    padding-top: 2px;
+    border-top: 1px solid var(--gray-light);
+    padding-top: 16px;
+  }
+  .card-output-box {
+    background: #f0f4ff;
+    border-left: 3px solid var(--blue);
+    border-radius: 3px;
+    padding: 12px 16px;
+    font-size: 12.5px;
+    color: var(--navy);
+    line-height: 1.6;
+    font-weight: 500;
+  }
+
+  .source-block {
+    padding: 0 24px 20px;
+    border-top: 1px solid var(--gray-light);
+    margin-top: 0;
+    padding-top: 14px;
+  }
+  .source-block-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--gray-text);
+    margin-bottom: 6px;
+  }
+  .source-block p {
+    font-size: 11.5px;
+    color: var(--gray-text);
+    line-height: 1.6;
+  }
+  .source-block strong { color: var(--navy); font-weight: 600; }
+
+  /* ===================== PARTE 3: SECUENCIA ===================== */
+  .steps { display: flex; flex-direction: column; gap: 0; }
+  .step {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: 0;
+    position: relative;
+  }
+  .step-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 4px;
+  }
+  .step-num {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--navy);
+    color: var(--white);
+    font-size: 15px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    z-index: 1;
+  }
+  .step-line {
+    width: 2px;
+    flex: 1;
+    background: var(--gray-light);
+    margin-top: 4px;
+  }
+  .step:last-child .step-line { display: none; }
+  .step-right {
+    padding: 0 0 32px 12px;
+  }
+  .step-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 5px;
+    margin-top: 8px;
+  }
+  .step-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--navy);
+    margin-bottom: 10px;
+  }
+  .step-body {
+    background: var(--white);
+    border-radius: 6px;
+    padding: 18px 20px;
+    box-shadow: 0 1px 4px rgba(26,34,70,0.07);
+  }
+  .step-body p {
+    font-size: 12.5px;
+    color: var(--navy);
+    line-height: 1.65;
+    margin-bottom: 12px;
+  }
+  .step-body p:last-child { margin-bottom: 0; }
+  .step-methods {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--gray-light);
+  }
+  .step-method-chip {
+    font-size: 10px;
+    font-weight: 600;
+    background: #eef2ff;
+    color: var(--navy);
+    border: 1px solid #c5d0f5;
+    padding: 3px 9px;
+    border-radius: 3px;
+  }
+  .step-deliverable {
+    margin-top: 12px;
+    background: #f0f4ff;
+    border-left: 3px solid var(--blue);
+    border-radius: 3px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--navy);
+    line-height: 1.6;
+  }
+  .step-deliverable strong { font-weight: 700; }
+
+  /* LEGEND */
+  .legend {
+    display: flex;
+    gap: 18px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11px;
+    color: var(--gray-text);
+    font-weight: 500;
+  }
+
+  /* CALLOUT */
+  .callout {
+    background: var(--white);
+    border: 1px solid #c5d0f5;
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin-bottom: 28px;
+    font-size: 12.5px;
+    color: var(--navy);
+    line-height: 1.6;
+  }
+  .callout strong { color: var(--blue); font-weight: 700; }
+
+  @media (max-width: 700px) {
+    .header { padding: 24px 20px 20px; }
+    .tabs-bar { padding: 0 20px; }
+    .content { padding: 28px 20px 48px; }
+    .card-body { grid-template-columns: 1fr; }
+    .diag-table th, .diag-table td { padding: 11px 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-eyebrow">Análisis Metodológico · Área Comercial</div>
+  <h1>Metodologías de Fidelización de Clientes<br>aplicables a Bracker</h1>
+  <div class="header-meta">
+    Basado en tesis MBA: <span>Diseño de Modelo de Fidelización de Productores en COPEFRUT</span> · Leonardo Ortega Martel, Universidad de Chile, 2026
+  </div>
+</div>
+
+<div class="tabs-bar">
+  <button class="tab-btn active" onclick="showTab('p1')">Parte 1 — Diagnóstico metodológico</button>
+  <button class="tab-btn" onclick="showTab('p2')">Parte 2 — Traducción a Bracker</button>
+  <button class="tab-btn" onclick="showTab('p3')">Parte 3 — Secuencia de aplicación</button>
+</div>
+
+<div class="content">
+
+  <!-- ===================== PARTE 1 ===================== -->
+  <div id="p1" class="section active">
+    <div class="section-title">Diagnóstico metodológico</div>
+    <div class="section-desc">6 metodologías identificadas en la tesis. Para cada una: fuente original, evaluación de aplicabilidad directa a Bracker en una línea, y clasificación.</div>
+
+    <div class="legend">
+      <div class="legend-item"><span class="chip chip-green">Directamente aplicable</span> Trasladable sin modificación estructural</div>
+      <div class="legend-item"><span class="chip chip-amber">Adaptable</span> Requiere ajuste al contexto B2B industrial</div>
+    </div>
+
+    <table class="diag-table">
+      <thead>
+        <tr>
+          <th style="width:26%">Metodología</th>
+          <th style="width:26%">Fuente original</th>
+          <th style="width:9%">Clasificación</th>
+          <th>Evaluación para Bracker</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <div class="method-name">Viaje del Usuario<br>(User Journey)</div>
+          </td>
+          <td>
+            <div class="method-source">Stickdorn, M., Hormess, M., Lawrence, A. &amp; Schneider, J. (2018). <em>This is Service Design Doing.</em> O'Reilly Media.</div>
+          </td>
+          <td><span class="chip chip-green">Directamente aplicable</span></td>
+          <td class="eval-text">Mapea los puntos de contacto clave entre Bracker y sus clientes a lo largo del ciclo de venta y postventa — desde la primera visita hasta la renovación o consumibles —, revelando dónde se pierden oportunidades de aftermarket.</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="method-name">Ideal Journey<br>+ Co-creación</div>
+          </td>
+          <td>
+            <div class="method-source">Prahalad, C.K. &amp; Ramaswamy, V. (2004). <em>The Future of Competition: Co-creating Unique Value with Customers.</em> Harvard Business School Press.</div>
+          </td>
+          <td><span class="chip chip-amber">Adaptable</span></td>
+          <td class="eval-text">Aplicable en formato simplificado: en lugar de taller con decenas de productores, una sesión con 4–5 clientes clave de Bracker para diseñar cómo debería verse la relación ideal post-venta, co-construyendo el modelo de atención técnica y comercial.</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="method-name">Segmentación económica multivariable</div>
+          </td>
+          <td>
+            <div class="method-source">Kotler, P. &amp; Keller, K. (2016). <em>Marketing Management</em> (15th ed.). Pearson. Cap. 8: Identifying Market Segments and Targets.</div>
+          </td>
+          <td><span class="chip chip-green">Directamente aplicable</span></td>
+          <td class="eval-text">Segmentar la cartera de clientes de Bracker por facturación total, ratio aftermarket/equipo, y potencial de crecimiento — produce una matriz de priorización para asignar tiempo de los KAMs de forma diferenciada y no homogénea.</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="method-name">Perfilamiento estratégico de clientes</div>
+          </td>
+          <td>
+            <div class="method-source">Homburg, C., Workman, J.P. &amp; Jensen, O. (2002). A configurational perspective on key account management. <em>Journal of Marketing, 66</em>(2), 38–60.</div>
+          </td>
+          <td><span class="chip chip-amber">Adaptable</span></td>
+          <td class="eval-text">Complementa la segmentación con dimensiones conductuales: autonomía técnica del cliente, nivel de dependencia del servicio Bracker, propensión a comprar consumibles, y historial de decisión de compra — permite diseñar modelos de atención diferenciados por perfil, no solo por tamaño.</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="method-name">Índice de Fidelización compuesto</div>
+          </td>
+          <td>
+            <div class="method-source">Kumar, V. &amp; Shah, D. (2004). Building and sustaining profitable customer loyalty for the 21st century. <em>Journal of Retailing, 80</em>(4), 317–330.</div>
+          </td>
+          <td><span class="chip chip-amber">Adaptable</span></td>
+          <td class="eval-text">La lógica de índice compuesto es trasladable, pero las dimensiones deben redefinirse para Bracker: participación en aftermarket, antigüedad de la relación, uso de servicio técnico, y número de unidades de negocio activas — convierte la fidelización en un dato gestionable por cuenta.</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="method-name">Benchmarking B2B</div>
+          </td>
+          <td>
+            <div class="method-source">Camp, R.C. (1989). <em>Benchmarking: The Search for Industry Best Practices That Lead to Superior Performance.</em> ASQC Quality Press. Desarrollado originalmente en Xerox Corporation.</div>
+          </td>
+          <td><span class="chip chip-green">Directamente aplicable</span></td>
+          <td class="eval-text">Bracker puede replicar el análisis de referentes mirando cómo distribuidores de maquinaria industrial en sectores adyacentes (farmacéutico, empaque) estructuran su modelo de postventa y consumibles — identifica prácticas concretas sin necesidad de grandes recursos.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===================== PARTE 2 ===================== -->
+  <div id="p2" class="section">
+    <div class="section-title">Traducción a Bracker</div>
+    <div class="section-desc">Para cada metodología aplicable o adaptable: qué significa en el contexto de Bracker (clientes = plantas industriales de alimentos, ciclo 6–18 meses, relación equipo + servicio técnico + consumibles) y qué output concreto generaría.</div>
+
+    <div class="callout">
+      <strong>Objetivo de fondo que orienta toda la traducción:</strong> aumentar el ratio de facturación aftermarket del 30–40% actual hacia 60–70%. Cada metodología se evalúa en función de cuánto aporta a ese objetivo específico.
+    </div>
+
+    <div class="cards-grid">
+
+      <!-- CARD 1 -->
+      <div class="method-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-number">Metodología 01</div>
+            <div class="card-title">Viaje del Usuario (User Journey)</div>
+            <div class="card-source">Stickdorn et al. (2018) · This is Service Design Doing · O'Reilly Media</div>
+          </div>
+          <span class="chip chip-green" style="margin-top:4px">Directamente aplicable</span>
+        </div>
+        <div class="card-body">
+          <div class="card-col">
+            <div class="card-col-label">Cómo se traduce a Bracker</div>
+            <p>En la tesis, el viaje mapea las etapas del productor con la exportadora: captación, precosecha, cosecha, postcosecha. En Bracker, la lógica es idéntica pero las etapas son distintas: <strong>detección de necesidad → visita técnica → propuesta y negociación → cierre → instalación → puesta en marcha → soporte técnico → consumibles → renovación o expansión.</strong></p>
+            <p>El valor de mapearlo formalmente es que Bracker nunca ha explicitado dónde están los momentos críticos de la relación con el cliente — y por tanto no sabe en qué etapa se pierden las oportunidades de aftermarket. El viaje lo hace visible.</p>
+          </div>
+          <div class="card-col">
+            <div class="card-col-label">Foco específico para aftermarket</div>
+            <p>El tramo más relevante para el objetivo de Bracker es el <strong>post-instalación</strong>: ¿qué pasa después de que el equipo entra en producción? ¿Hay contacto estructurado o solo llamadas reactivas cuando algo falla? ¿El cliente sabe qué consumibles necesita y cuándo?</p>
+            <p>El viaje actual probablemente muestre que la relación cae después del cierre. Eso es la brecha. El viaje ideal debe diseñarse específicamente para esa zona muerta.</p>
+          </div>
+        </div>
+        <div class="card-output">
+          <div class="card-output-label">Output concreto que generaría en Bracker</div>
+          <div class="card-output-box">Mapa de momentos críticos en la relación cliente–Bracker: un visual que muestra todas las etapas del ciclo, los actores involucrados (KAM, técnico, cliente técnico, gerencia de planta), el nivel de contacto actual en cada etapa, y los puntos donde se pierden oportunidades de aftermarket o donde el cliente se va a la competencia para consumibles.</div>
+        </div>
+        <div class="source-block">
+          <div class="source-block-label">Para profundizar</div>
+          <p><strong>Libro principal:</strong> Stickdorn, M., Hormess, M., Lawrence, A. &amp; Schneider, J. (2018). <em>This is Service Design Doing.</em> O'Reilly Media. — El capítulo de Customer Journey Mapping tiene plantillas directamente usables.<br><strong>Complemento académico:</strong> Lemon, K.N. &amp; Verhoef, P.C. (2016). Understanding customer experience throughout the customer journey. <em>Journal of Marketing, 80</em>(6), 69–96.</p>
+        </div>
+      </div>
+
+      <!-- CARD 2 -->
+      <div class="method-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-number">Metodología 02</div>
+            <div class="card-title">Ideal Journey + Co-creación</div>
+            <div class="card-source">Prahalad &amp; Ramaswamy (2004) · The Future of Competition · Harvard Business School Press</div>
+          </div>
+          <span class="chip chip-amber" style="margin-top:4px">Adaptable</span>
+        </div>
+        <div class="card-body">
+          <div class="card-col">
+            <div class="card-col-label">Cómo se traduce a Bracker</div>
+            <p>En la tesis, el Ideal Journey se construyó mediante talleres con productores y equipos internos de COPEFRUT para imaginar cómo debería ser la relación futura. En Bracker, el equivalente sería <strong>una sesión de trabajo de 2–3 horas con 3–5 clientes clave</strong> (jefes de mantención o gerentes de planta) para co-diseñar cómo quieren ser atendidos después de comprar un equipo.</p>
+            <p>La diferencia con simplemente "preguntar qué quieren" es que co-crear compromete al cliente con el modelo de atención resultante — lo hace coautor, no solo destinatario.</p>
+          </div>
+          <div class="card-col">
+            <div class="card-col-label">Adaptación al contexto de Bracker</div>
+            <p>Con un equipo de 3–4 KAMs, el "taller" no necesita ser un evento separado. Puede integrarse en una visita técnica de seguimiento con una agenda estructurada de 45–60 minutos. Las preguntas clave son: ¿cuándo deberías llamarme sin que yo te llame? ¿Qué información necesitas de tu equipo que hoy no tienes? ¿Cómo querrías coordinar el reabastecimiento de consumibles?</p>
+            <p>Lo que se construye a partir de esas 3–5 sesiones es el insumo para diseñar el modelo de atención post-venta de Bracker.</p>
+          </div>
+        </div>
+        <div class="card-output">
+          <div class="card-output-label">Output concreto que generaría en Bracker</div>
+          <div class="card-output-box">Modelo de atención post-venta co-diseñado con clientes clave: define qué tipo de contacto proactivo espera cada perfil de cliente, en qué momentos del ciclo productivo, y bajo qué formato (visita técnica, reporte digital, llamada periódica). Es la base para estandarizar el seguimiento del equipo comercial.</div>
+        </div>
+        <div class="source-block">
+          <div class="source-block-label">Para profundizar</div>
+          <p><strong>Libro principal:</strong> Prahalad, C.K. &amp; Ramaswamy, V. (2004). <em>The Future of Competition: Co-creating Unique Value with Customers.</em> Harvard Business School Press.<br><strong>Artículo fundacional:</strong> Prahalad, C.K. &amp; Ramaswamy, V. (2004). Co-creation experiences: The next practice in value creation. <em>Journal of Interactive Marketing, 18</em>(3), 5–14.</p>
+        </div>
+      </div>
+
+      <!-- CARD 3 -->
+      <div class="method-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-number">Metodología 03</div>
+            <div class="card-title">Segmentación económica multivariable</div>
+            <div class="card-source">Kotler &amp; Keller (2016) · Marketing Management (15th ed.) · Pearson</div>
+          </div>
+          <span class="chip chip-green" style="margin-top:4px">Directamente aplicable</span>
+        </div>
+        <div class="card-body">
+          <div class="card-col">
+            <div class="card-col-label">Cómo se traduce a Bracker</div>
+            <p>En la tesis, los productores se segmentaron con 3 variables ponderadas: volumen aportado (50%), calidad de fruta (30%), y rentabilidad (20%). En Bracker, la lógica es la misma pero las variables cambian para reflejar el valor de cada cliente para el negocio:</p>
+            <p><strong>Variable 1 — Facturación total:</strong> suma de equipos + servicio + consumibles en los últimos 2–3 años.<br><strong>Variable 2 — Ratio aftermarket:</strong> qué porcentaje de su gasto en Bracker es post-venta vs. equipo (mayor ratio = cliente ya fidelizado en servicio).<br><strong>Variable 3 — Potencial de crecimiento:</strong> tamaño de la planta, líneas productivas sin cobertura de Bracker, o expansiones en curso.</p>
+          </div>
+          <div class="card-col">
+            <div class="card-col-label">Resultado de la segmentación</div>
+            <p>La matriz 2x2 resultante (facturación × potencial) produce 4 grupos: <strong>Cuentas estratégicas</strong> (alta facturación, alto potencial — retención prioritaria), <strong>Cuentas de desarrollo</strong> (baja facturación, alto potencial — inversión comercial), <strong>Cuentas maduras</strong> (alta facturación, bajo potencial — eficiencia de servicio), y <strong>Cuentas transaccionales</strong> (bajo-bajo — servicio estandarizado, bajo costo de atención).</p>
+            <p>Esto termina con la práctica de tratar a todos los clientes igual y permite asignar el tiempo de los KAMs donde genera más retorno.</p>
+          </div>
+        </div>
+        <div class="card-output">
+          <div class="card-output-label">Output concreto que generaría en Bracker</div>
+          <div class="card-output-box">Matriz de priorización de cartera de clientes por unidad de negocio: un archivo (Excel o Monday.com) que clasifica cada cliente en uno de los 4 cuadrantes, con el nivel de atención asignado (frecuencia de visita, presupuesto de relacionamiento, acceso a beneficios especiales). Actualizable una vez al año.</div>
+        </div>
+        <div class="source-block">
+          <div class="source-block-label">Para profundizar</div>
+          <p><strong>Libro principal:</strong> Kotler, P. &amp; Keller, K. (2016). <em>Marketing Management</em> (15th ed.). Pearson. Capítulo 8: Identifying Market Segments and Targets.<br><strong>Aplicación B2B específica:</strong> Weinstein, A. (2013). <em>Handbook of Market Segmentation: Strategic Targeting for Business and Technology Firms</em> (3rd ed.). Routledge.</p>
+        </div>
+      </div>
+
+      <!-- CARD 4 -->
+      <div class="method-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-number">Metodología 04</div>
+            <div class="card-title">Perfilamiento estratégico de clientes</div>
+            <div class="card-source">Homburg, Workman &amp; Jensen (2002) · Journal of Marketing, 66(2)</div>
+          </div>
+          <span class="chip chip-amber" style="margin-top:4px">Adaptable</span>
+        </div>
+        <div class="card-body">
+          <div class="card-col">
+            <div class="card-col-label">Cómo se traduce a Bracker</div>
+            <p>En la tesis, el perfilamiento agrega 5 dimensiones conductuales al segmento económico: predictibilidad operacional, profesionalización, autonomía técnica, desempeño financiero, y diversificación. En Bracker, las dimensiones conductuales relevantes son distintas:</p>
+            <p><strong>Autonomía técnica:</strong> ¿el cliente tiene equipo propio de mantención o depende de Bracker?<br><strong>Rol del decisor:</strong> ¿quién decide la compra de consumibles — el jefe de planta, el área de compras, o la gerencia?<br><strong>Historial de cambio:</strong> ¿ha comprado consumibles o servicio a competidores, o es exclusivo?<br><strong>Comportamiento de pago y planificación:</strong> ¿pide cotizaciones con anticipación o solo en emergencias?</p>
+          </div>
+          <div class="card-col">
+            <div class="card-col-label">Por qué esto es distinto a la segmentación</div>
+            <p>Dos clientes del mismo cuadrante en la segmentación económica pueden requerir modelos de atención muy diferentes. Un cliente grande con equipo técnico propio y comprador centralizado necesita un modelo de atención tipo "cuenta clave" con visitas técnicas periódicas y propuestas proactivas. Un cliente grande sin equipo técnico propio necesita que Bracker sea su proveedor de soporte casi externo.</p>
+            <p>El perfilamiento evita tratar igual a clientes que tienen el mismo tamaño pero relaciones completamente distintas con el servicio.</p>
+          </div>
+        </div>
+        <div class="card-output">
+          <div class="card-output-label">Output concreto que generaría en Bracker</div>
+          <div class="card-output-box">Ficha de perfil por cuenta clave: un documento de 1 página por cliente estratégico que define su perfil conductual, el modelo de atención recomendado (frecuencia, formato, interlocutores), y las palancas específicas para aumentar penetración en aftermarket. Vive en Monday.com o en la base de conocimiento comercial.</div>
+        </div>
+        <div class="source-block">
+          <div class="source-block-label">Para profundizar</div>
+          <p><strong>Artículo original:</strong> Homburg, C., Workman, J.P. &amp; Jensen, O. (2002). A configurational perspective on key account management. <em>Journal of Marketing, 66</em>(2), 38–60.<br><strong>Libro complementario:</strong> McDonald, M., Millman, T. &amp; Rogers, B. (1997). Key account management: Theory, practice and challenges. <em>Journal of Marketing Management, 13</em>(8), 737–757.<br><strong>Libro práctico:</strong> Capon, N. (2001). <em>Key Account Management and Planning.</em> Free Press.</p>
+        </div>
+      </div>
+
+      <!-- CARD 5 -->
+      <div class="method-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-number">Metodología 05</div>
+            <div class="card-title">Índice de Fidelización compuesto</div>
+            <div class="card-source">Kumar &amp; Shah (2004) · Journal of Retailing, 80(4)</div>
+          </div>
+          <span class="chip chip-amber" style="margin-top:4px">Adaptable</span>
+        </div>
+        <div class="card-body">
+          <div class="card-col">
+            <div class="card-col-label">Cómo se traduce a Bracker</div>
+            <p>En la tesis, el Índice de Fidelización integra: participación comercial, permanencia relacional, uso de servicios, participación en proyectos, y vinculación digital. En Bracker, las dimensiones deben redefinirse para que el índice sea calculable con datos disponibles en Monday.com o en el histórico de facturación:</p>
+            <p><strong>Dimensión 1 — Participación aftermarket (40%):</strong> ratio aftermarket / facturación total del cliente en últimos 12 meses.<br><strong>Dimensión 2 — Antigüedad (20%):</strong> años de relación activa con Bracker.<br><strong>Dimensión 3 — Amplitud de líneas (20%):</strong> cuántas unidades de negocio de Bracker usa (Proceso, Envases, Color).<br><strong>Dimensión 4 — Recomendación o referidos (20%):</strong> si el cliente ha referido o participado en actividades de Bracker (visitas de fabricante, demos, etc.).</p>
+          </div>
+          <div class="card-col">
+            <div class="card-col-label">Para qué sirve en la práctica</div>
+            <p>El índice convierte "este cliente nos compra bastante" en un número gestionable. Permite detectar clientes con alta facturación pero baja fidelización (compran equipo pero no aftermarket — riesgo de rotación) y clientes con baja facturación pero alta fidelización (leales pero subdesarrollados — oportunidad de crecimiento).</p>
+            <p>También sirve como KPI de resultado para los Rocas EOS de la Jefe Comercial: en lugar de medir solo facturación, medir evolución del índice promedio de la cartera.</p>
+          </div>
+        </div>
+        <div class="card-output">
+          <div class="card-output-label">Output concreto que generaría en Bracker</div>
+          <div class="card-output-box">Índice de Fidelización por cuenta (IFC–Bracker): un score numérico (0–100) calculable por cliente con datos ya disponibles. Permite clasificar la cartera en: Fidelizados, En desarrollo, En riesgo, y Transaccionales — y trazar una línea base para medir el avance del plan comercial a 12 meses.</div>
+        </div>
+        <div class="source-block">
+          <div class="source-block-label">Para profundizar</div>
+          <p><strong>Artículo original:</strong> Kumar, V. &amp; Shah, D. (2004). Building and sustaining profitable customer loyalty for the 21st century. <em>Journal of Retailing, 80</em>(4), 317–330.<br><strong>Libro ampliado:</strong> Kumar, V. (2008). <em>Customer Lifetime Value: The Path to Profitability.</em> Now Publishers.<br><strong>Aplicación B2B:</strong> Reinartz, W. &amp; Kumar, V. (2002). The mismanagement of customer loyalty. <em>Harvard Business Review, 80</em>(7), 86–94.</p>
+        </div>
+      </div>
+
+      <!-- CARD 6 -->
+      <div class="method-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-number">Metodología 06</div>
+            <div class="card-title">Benchmarking B2B</div>
+            <div class="card-source">Camp (1989) · Benchmarking: The Search for Industry Best Practices · ASQC Quality Press · Desarrollado en Xerox Corporation</div>
+          </div>
+          <span class="chip chip-green" style="margin-top:4px">Directamente aplicable</span>
+        </div>
+        <div class="card-body">
+          <div class="card-col">
+            <div class="card-col-label">Cómo se traduce a Bracker</div>
+            <p>En la tesis, el benchmark analizó exportadoras de otras industrias y países para extraer prácticas de relacionamiento con productores. En Bracker, el benchmark debe enfocarse en un problema específico: <strong>¿cómo estructuran el modelo de postventa y consumibles los distribuidores de maquinaria industrial en sectores adyacentes?</strong></p>
+            <p>Los referentes más útiles no son competidores directos (que no van a compartir información) sino distribuidores de maquinaria industrial en otras industrias: equipos de proceso farmacéutico, líneas de empaque, equipos de laboratorio — todos venden máquinas + servicio + consumibles con ciclos similares.</p>
+          </div>
+          <div class="card-col">
+            <div class="card-col-label">Cómo ejecutarlo con un equipo pequeño</div>
+            <p>No requiere contratar consultores ni elaborar un informe extenso. El benchmark de Bracker puede ejecutarse en 4 semanas con los mismos KAMs:</p>
+            <p><strong>Paso 1:</strong> Identificar 3–5 distribuidores de maquinaria industrial no competidores en Chile o LATAM con modelos de aftermarket reconocidos.<br><strong>Paso 2:</strong> Levantar información pública (web, LinkedIn, publicaciones técnicas) sobre su estructura de servicio y consumibles.<br><strong>Paso 3:</strong> Si es posible, una llamada exploratoria con alguien de esas empresas bajo pretexto de colaboración o interés en sus fabricantes.<br><strong>Paso 4:</strong> Síntesis de 2–3 prácticas concretas extrapolables a Bracker.</p>
+          </div>
+        </div>
+        <div class="card-output">
+          <div class="card-output-label">Output concreto que generaría en Bracker</div>
+          <div class="card-output-box">Tabla de referentes: 3–5 empresas con modelo de postventa documentado, con descripción de cómo gestionan el seguimiento post-instalación, la venta de consumibles, y la frecuencia de contacto técnico-comercial. Identifica 2–3 prácticas concretas que Bracker podría adaptar en menos de 90 días.</div>
+        </div>
+        <div class="source-block">
+          <div class="source-block-label">Para profundizar</div>
+          <p><strong>Libro original:</strong> Camp, R.C. (1989). <em>Benchmarking: The Search for Industry Best Practices That Lead to Superior Performance.</em> ASQC Quality Press. (Camp fue el arquitecto del modelo de benchmarking de Xerox — el más citado en la literatura de gestión.)<br><strong>Versión actualizada:</strong> Boxwell, R.J. (1994). <em>Benchmarking for Competitive Advantage.</em> McGraw-Hill.</p>
+        </div>
+      </div>
+
+    </div><!-- /cards-grid -->
+  </div>
+
+  <!-- ===================== PARTE 3 ===================== -->
+  <div id="p3" class="section">
+    <div class="section-title">Secuencia de aplicación</div>
+    <div class="section-desc">5 pasos en orden lógico de dependencia: cada paso alimenta al siguiente. Diseñado para un equipo de 3–4 personas con operación activa en paralelo — no es un proyecto de tiempo completo.</div>
+
+    <div class="callout">
+      <strong>Principio rector:</strong> el orden importa. No tiene sentido construir un índice de fidelización antes de saber cómo se ven los viajes actuales, ni diseñar un modelo de atención ideal antes de tener la cartera segmentada. La secuencia propuesta minimiza retrabajo.
+    </div>
+
+    <div class="steps">
+
+      <!-- STEP 1 -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-num">1</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-right">
+          <div class="step-tag">Fundación · Semanas 1–4</div>
+          <div class="step-title">Mapear el viaje actual del cliente</div>
+          <div class="step-body">
+            <p>Antes de decidir qué cambiar, hay que ver dónde está la brecha real. El Viaje del Usuario aplicado a Bracker mapea cada etapa de la relación con el cliente — desde el primer contacto hasta la recompra o consumibles — e identifica en qué punto se corta el contacto y por qué no se captura aftermarket.</p>
+            <p>No requiere un taller grande. Con los KAMs actuales en una sesión de 2 horas usando un canvas simple (etapa / actores / qué pasa / qué falta), ya se tiene la línea base. Si es posible, validar con 2–3 clientes seleccionados en conversaciones de 30 minutos cada una.</p>
+            <div class="step-deliverable"><strong>Entregable:</strong> Mapa de momentos críticos de la relación cliente–Bracker, con las brechas de contacto post-instalación identificadas y priorizadas.</div>
+            <div class="step-methods">
+              <span class="step-method-chip">Viaje del Usuario (Stickdorn et al.)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-num">2</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-right">
+          <div class="step-tag">Estructura · Semanas 3–6</div>
+          <div class="step-title">Segmentar y perfilar la cartera de clientes</div>
+          <div class="step-body">
+            <p>Con el viaje mapeado, el siguiente paso es saber a quién atender primero y cómo. La segmentación económica clasifica la cartera por valor actual y potencial de crecimiento en aftermarket. El perfilamiento agrega la dimensión conductual: cómo decide cada cliente, qué nivel de autonomía técnica tiene, y qué palancas mueven la compra de servicio y consumibles.</p>
+            <p>Este paso puede hacerse con datos ya disponibles en facturación e historial de Monday.com — no requiere investigación externa. El producto es una matriz de cartera que los KAMs usan para priorizar su agenda semana a semana.</p>
+            <div class="step-deliverable"><strong>Entregable:</strong> Matriz de priorización de cartera (4 cuadrantes) + ficha de perfil para las 10–15 cuentas estratégicas o de desarrollo. Base para asignar tiempo de KAMs de forma diferenciada.</div>
+            <div class="step-methods">
+              <span class="step-method-chip">Segmentación económica (Kotler &amp; Keller)</span>
+              <span class="step-method-chip">Perfilamiento estratégico (Homburg et al.)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-num">3</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-right">
+          <div class="step-tag">Referentes · Semanas 4–7</div>
+          <div class="step-title">Benchmarking de modelos de postventa en industrias adyacentes</div>
+          <div class="step-body">
+            <p>En paralelo con el Paso 2, identificar 3–5 distribuidores de maquinaria industrial (fuera del sector de alimentos para evitar conflictos) que tengan modelos de aftermarket consolidados. La pregunta central es: ¿cómo estructuran el contacto post-instalación, la venta de consumibles, y el seguimiento técnico-comercial?</p>
+            <p>Esto no es benchmarking de competidores — es benchmarking de prácticas. El objetivo es traer 2–3 ideas concretas que Bracker pueda adaptar rápidamente, sin reinventar desde cero. Especialmente útil para el diseño del Paso 4.</p>
+            <div class="step-deliverable"><strong>Entregable:</strong> Tabla de referentes con 3–5 empresas y sus prácticas documentadas. Lista corta de 2–3 prácticas adaptables a Bracker con bajo esfuerzo de implementación.</div>
+            <div class="step-methods">
+              <span class="step-method-chip">Benchmarking B2B (Camp / Xerox)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-num">4</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-right">
+          <div class="step-tag">Co-diseño · Semanas 6–10</div>
+          <div class="step-title">Co-crear el modelo de atención post-venta con clientes clave</div>
+          <div class="step-body">
+            <p>Con el viaje actual mapeado, la cartera segmentada, y referentes de otras industrias, ya hay suficiente material para hacer una pregunta concreta a los clientes más estratégicos: ¿cómo quieren ser atendidos después de que el equipo está instalado? Este paso convierte los hallazgos anteriores en un modelo de atención validado externamente.</p>
+            <p>Seleccionar 3–5 clientes del cuadrante "cuentas estratégicas" o "cuentas de desarrollo". Integrar la conversación en una visita técnica ya planificada — no requiere evento especial. La sesión dura 45–60 minutos con una guía de preguntas estructurada. El resultado es el Ideal Journey de Bracker: cómo debería verse la relación desde la perspectiva del cliente.</p>
+            <div class="step-deliverable"><strong>Entregable:</strong> Modelo de atención post-venta co-diseñado: define qué tipo de contacto proactivo, en qué frecuencia, bajo qué formato, y con qué información se espera de Bracker después de la instalación. Es el estándar operativo para el equipo comercial.</div>
+            <div class="step-methods">
+              <span class="step-method-chip">Ideal Journey + Co-creación (Prahalad &amp; Ramaswamy)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 5 -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-num">5</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-right">
+          <div class="step-tag">Medición · Semanas 10–14</div>
+          <div class="step-title">Construir el Índice de Fidelización y establecer KPIs de resultado</div>
+          <div class="step-body">
+            <p>Con la cartera segmentada y el modelo de atención definido, el último paso es crear el instrumento de medición que convierte la fidelización en un dato gestionable. El Índice de Fidelización por Cuenta (IFC–Bracker) combina ratio aftermarket, antigüedad, amplitud de líneas activas, y participación en actividades de Bracker — y produce un score por cliente actualizable anualmente.</p>
+            <p>Este índice tiene dos usos: operativo (los KAMs lo usan para saber qué clientes están en riesgo y dónde actuar) y estratégico (la Jefe Comercial lo usa como KPI de resultado en los Rocas EOS y en el reporte al GG, en lugar de reportar solo facturación total). Es la diferencia entre medir actividad y medir resultados.</p>
+            <div class="step-deliverable"><strong>Entregable:</strong> Dashboard de fidelización de cartera: score IFC por cliente, clasificación en 4 categorías (Fidelizados / En desarrollo / En riesgo / Transaccionales), y línea base para medir evolución a 12 meses. Integrable en Monday.com o Google Sheets.</div>
+            <div class="step-methods">
+              <span class="step-method-chip">Índice de Fidelización compuesto (Kumar &amp; Shah)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /steps -->
+  </div>
+
+</div><!-- /content -->
+
+<script>
+  function showTab(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>
