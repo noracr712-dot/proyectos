@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Calculadora ROI Benhil — Bracker Proceso</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;900&family=Barlow+Condensed:wght@600;700;900&display=swap" rel="stylesheet"/>
+<style>
+  :root{--bd:#233368;--bm:#224893;--bb:#1086FC;--bl:#e8f1ff;--bg:#f4f7fd;--br:12px;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Barlow',sans-serif;background:var(--bg);min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:24px 16px;}
+  .lite{max-width:580px;width:100%;margin:0 auto;}
+
+  .lh{background:var(--bd);border-radius:16px 16px 0 0;padding:22px 28px 20px;text-align:center;}
+  .lh-brand{display:flex;align-items:baseline;justify-content:center;margin-bottom:6px;}
+  .lh-b{font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:900;color:#fff;letter-spacing:2px;text-transform:uppercase;}
+  .lh-p{font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:700;color:var(--bb);letter-spacing:2px;text-transform:uppercase;margin-left:10px;}
+  .lh-tag{font-size:12px;color:rgba(255,255,255,.4);letter-spacing:.5px;margin-bottom:4px;}
+  .lh-title{font-size:16px;font-weight:600;color:rgba(255,255,255,.85);line-height:1.4;}
+
+  .lb{background:#fff;border-radius:0 0 16px 16px;padding:24px;box-shadow:0 4px 24px rgba(35,51,104,.08);}
+
+  .steps{display:flex;align-items:center;justify-content:center;margin-bottom:24px;}
+  .step{display:flex;flex-direction:column;align-items:center;gap:4px;}
+  .step-dot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;transition:all .3s;}
+  .step-dot.done{background:var(--bb);color:#fff;}
+  .step-dot.active{background:var(--bd);color:#fff;box-shadow:0 0 0 4px rgba(16,134,252,.2);}
+  .step-dot.pending{background:#edf0f7;color:#8a93ad;}
+  .step-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#8a93ad;white-space:nowrap;}
+  .step-lbl.active{color:var(--bd);}
+  .step-line{flex:1;height:2px;background:#edf0f7;margin-bottom:16px;min-width:24px;max-width:50px;}
+  .step-line.done{background:var(--bb);}
+
+  .section{display:none;animation:fadeIn .25s ease;}.section.vis{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  .card{background:#f8faff;border-radius:12px;border:1px solid #e4eaf5;padding:18px 20px;margin-bottom:14px;}
+  .ctitle{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--bm);margin-bottom:14px;display:flex;align-items:center;gap:6px;}
+  .cdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+
+  .f{margin-bottom:14px;}.f:last-child{margin-bottom:0;}
+  .f label{display:block;font-size:12px;color:#4a5470;font-weight:600;margin-bottom:6px;}
+  .f label .hint{font-size:10px;color:#8a93ad;font-weight:400;margin-left:4px;}
+  .f input[type=text],.f input[type=number]{background:#fff;border:1.5px solid #dde4f0;border-radius:8px;font-family:'Barlow',sans-serif;font-size:14px;font-weight:500;color:var(--bd);padding:10px 13px;outline:none;width:100%;transition:border .15s;}
+  .f input:focus{border-color:var(--bb);box-shadow:0 0 0 3px rgba(16,134,252,.1);}
+
+  .slider-wrap{margin-top:2px;}
+  .slider-row{display:flex;align-items:center;gap:12px;}
+  .slider-row input[type=range]{flex:1;height:6px;accent-color:var(--bb);cursor:pointer;}
+  .slider-val{font-size:15px;font-weight:700;color:var(--bd);min-width:70px;text-align:right;font-family:'Barlow Condensed',sans-serif;}
+
+  .model-pills{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:4px;}
+  .mpill{background:#fff;border:2px solid #dde4f0;border-radius:10px;padding:10px 4px;text-align:center;cursor:pointer;transition:all .15s;}
+  .mpill:hover{border-color:var(--bb);background:var(--bl);}
+  .mpill.sel{background:var(--bl);border-color:var(--bb);}
+  .mpill .mn{font-size:12px;font-weight:700;color:var(--bd);}
+  .mpill .mv{font-size:10px;color:#8a93ad;margin-top:2px;}
+  .mpill.sel .mn,.mpill.sel .mv{color:var(--bb);}
+  .mpill.incompat{opacity:.35;cursor:not-allowed;pointer-events:none;}
+
+  .alert-incompat{background:#fff7e6;border:1px solid #f5c842;border-radius:8px;padding:9px 13px;font-size:11px;color:#7a5500;margin-top:10px;display:none;line-height:1.5;}
+  .alert-incompat.show{display:block;}
+
+  .supuestos-note{background:var(--bl);border-radius:10px;padding:12px 16px;font-size:11.5px;color:#3a4870;line-height:1.65;margin-bottom:14px;border:1px solid #c8d8f5;}
+  .supuestos-note strong{color:var(--bd);}
+
+  .btn-main{font-family:'Barlow',sans-serif;font-size:15px;font-weight:700;color:#fff;background:var(--bb);border:none;border-radius:10px;padding:14px 20px;cursor:pointer;width:100%;letter-spacing:.3px;transition:background .15s;margin-top:2px;}
+  .btn-main:hover{background:var(--bm);}
+  .btn-back{font-family:'Barlow',sans-serif;font-size:12px;font-weight:600;color:#8a93ad;background:none;border:1.5px solid #dde4f0;border-radius:9px;padding:10px 16px;cursor:pointer;width:100%;margin-top:8px;transition:all .15s;}
+  .btn-back:hover{border-color:var(--bd);color:var(--bd);}
+
+  /* Resultados */
+  .res-hero{background:var(--bd);border-radius:14px;padding:20px 22px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;}
+  .rh-label{font-size:10px;color:rgba(255,255,255,.5);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+  .rh-val{font-size:36px;font-weight:900;color:#fff;font-family:'Barlow Condensed',sans-serif;line-height:1.1;}
+  .rh-sub{font-size:11px;color:rgba(255,255,255,.35);margin-top:3px;}
+  .rh-right{text-align:center;padding-left:16px;}
+  .rh-pb-num{font-size:44px;font-weight:900;color:var(--bb);font-family:'Barlow Condensed',sans-serif;line-height:1;}
+  .rh-pb-lbl{font-size:10px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.5px;}
+
+  .res-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+  .res-kpi{background:#f8faff;border:1.5px solid #e4eaf5;border-radius:10px;padding:13px 15px;}
+  .rk-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#8a93ad;margin-bottom:5px;}
+  .rk-val{font-size:20px;font-weight:700;color:var(--bd);font-family:'Barlow Condensed',sans-serif;line-height:1.1;}
+  .rk-sub{font-size:10px;color:#8a93ad;margin-top:3px;}
+
+  .roi-wrap{margin:0 0 14px;}
+  .roi-label{font-size:10px;font-weight:700;color:#5a6480;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+  .roi-track{background:#edf0f7;border-radius:20px;height:13px;overflow:hidden;display:flex;}
+  .roi-seg-a{height:100%;background:var(--bb);transition:width .5s ease;border-radius:20px 0 0 20px;}
+  .roi-seg-b{height:100%;background:#1a7c46;transition:width .5s ease;}
+  .roi-leg{display:flex;gap:16px;margin-top:6px;font-size:10.5px;color:#6b7494;flex-wrap:wrap;}
+  .roi-leg span{display:flex;align-items:center;gap:5px;}
+  .roi-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+
+  .desglose{background:#f8faff;border:1.5px solid #e4eaf5;border-radius:10px;overflow:hidden;margin-bottom:14px;}
+  .desglose-row{display:flex;justify-content:space-between;align-items:center;padding:10px 15px;border-bottom:1px solid #edf0f7;font-size:12px;}
+  .desglose-row:last-child{border-bottom:none;font-weight:700;background:#edf2ff;}
+  .desglose-row .dr-lbl{color:#5a6480;}
+  .desglose-row .dr-val{font-weight:600;color:var(--bd);}
+  .desglose-row .dr-val.green{color:#1a7c46;}
+
+  .cta-card{background:linear-gradient(135deg,var(--bd) 0%,var(--bm) 100%);border-radius:14px;padding:22px;text-align:center;}
+  .cta-title{font-size:17px;font-weight:700;color:#fff;margin-bottom:7px;}
+  .cta-sub{font-size:12px;color:rgba(255,255,255,.6);margin-bottom:18px;line-height:1.6;}
+  .btn-cta{font-family:'Barlow',sans-serif;font-size:15px;font-weight:700;color:var(--bd);background:#fff;border:none;border-radius:10px;padding:13px 24px;cursor:pointer;width:100%;transition:all .15s;}
+  .btn-cta:hover{background:var(--bl);transform:translateY(-1px);}
+  .btn-recalc{font-family:'Barlow',sans-serif;font-size:12px;font-weight:600;color:rgba(255,255,255,.55);background:none;border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:9px 16px;cursor:pointer;width:100%;margin-top:9px;transition:all .15s;}
+  .btn-recalc:hover{background:rgba(255,255,255,.1);color:#fff;}
+
+  .footer-note{text-align:center;font-size:10px;color:#8a93ad;margin-top:16px;line-height:1.6;padding-bottom:8px;}
+
+  @media(max-width:400px){
+    .model-pills{grid-template-columns:repeat(3,1fr);}
+    .res-grid{grid-template-columns:1fr;}
+    .rh-val{font-size:28px;}
+  }
+</style>
+</head>
+<body>
+<div class="lite">
+
+<div class="lh">
+  <div class="lh-brand">
+    <span class="lh-b">Bracker</span>
+    <span class="lh-p">&nbsp;PROCESO</span>
+  </div>
+  <div class="lh-tag">Calculadora ROI · Envasadoras Benhil</div>
+  <div class="lh-title">¿Cuánto ganas con una envasadora más rápida y precisa?</div>
+</div>
+
+<div class="lb">
+
+  <div class="steps">
+    <div class="step"><div class="step-dot active" id="dot1">1</div><div class="step-lbl active" id="lbl1">Tu máquina</div></div>
+    <div class="step-line" id="line1"></div>
+    <div class="step"><div class="step-dot pending" id="dot2">2</div><div class="step-lbl" id="lbl2">Benhil</div></div>
+    <div class="step-line" id="line2"></div>
+    <div class="step"><div class="step-dot pending" id="dot3">3</div><div class="step-lbl" id="lbl3">Producto</div></div>
+    <div class="step-line" id="line3"></div>
+    <div class="step"><div class="step-dot pending" id="dot4">4</div><div class="step-lbl" id="lbl4">Cambios</div></div>
+    <div class="step-line" id="line4"></div>
+    <div class="step"><div class="step-dot pending" id="dot5">★</div><div class="step-lbl" id="lbl5">Resultados</div></div>
+  </div>
+
+  <!-- PASO 1 -->
+  <div class="section vis" id="s1">
+    <div class="card">
+      <div class="ctitle"><span class="cdot" style="background:#8a93ad;"></span>Tu envasadora actual o a comparar</div>
+      <div class="f">
+        <label>Nombre / modelo <span class="hint">(opcional)</span></label>
+        <input type="text" id="compNombre" placeholder="Ej: marca actual, competidor..."/>
+      </div>
+      <div class="f">
+        <label>Velocidad de envasado</label>
+        <div class="slider-wrap"><div class="slider-row">
+          <input type="range" id="velA_s" min="20" max="300" step="1" value="80" oninput="sv('velA_v',this.value+' u/min');calc()"/>
+          <span class="slider-val" id="velA_v">80 u/min</span>
+        </div></div>
+      </div>
+      <div class="f">
+        <label>Eficiencia operativa real</label>
+        <div class="slider-wrap"><div class="slider-row">
+          <input type="range" id="efA_s" min="30" max="100" step="1" value="60" oninput="sv('efA_v',this.value+'%');calc()"/>
+          <span class="slider-val" id="efA_v">60%</span>
+        </div></div>
+      </div>
+      <div class="f">
+        <label>Sobredosaje promedio <span class="hint">(g extra por unidad)</span></label>
+        <div class="slider-wrap"><div class="slider-row">
+          <input type="range" id="odA_s" min="0" max="3" step="0.05" value="0.5" oninput="sv('odA_v',parseFloat(this.value).toFixed(2)+'g');calc()"/>
+          <span class="slider-val" id="odA_v">0,50g</span>
+        </div></div>
+      </div>
+    </div>
+    <button class="btn-main" onclick="goStep(2)">Siguiente →</button>
+  </div>
+
+  <!-- PASO 2 -->
+  <div class="section" id="s2">
+    <div class="card">
+      <div class="ctitle"><span class="cdot" style="background:#1a7c46;"></span>¿Qué modelo Benhil te interesa?</div>
+      <div class="model-pills" id="modelPills">
+        <div class="mpill" data-model="M2000" onclick="selModel('M2000')"><div class="mn">M2000</div><div class="mv">100u · €500k</div></div>
+        <div class="mpill" data-model="M3000" onclick="selModel('M3000')"><div class="mn">M3000</div><div class="mv">100u · €800k</div></div>
+        <div class="mpill sel" data-model="M5600" onclick="selModel('M5600')"><div class="mn">M5600</div><div class="mv">140u · €900k</div></div>
+        <div class="mpill" data-model="M7000" onclick="selModel('M7000')"><div class="mn">M7000</div><div class="mv">200u · €1,1M</div></div>
+        <div class="mpill" data-model="M8000" onclick="selModel('M8000')"><div class="mn">M8000</div><div class="mv">250u · €1,45M</div></div>
+      </div>
+      <div class="alert-incompat" id="incompatAlert"></div>
+      <div style="margin-top:16px;" class="f">
+        <label>Precio de referencia de la máquina (€) <span class="hint">(*) referencial</span></label>
+        <input type="number" id="inversion" value="900000" min="1" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;"/>
+        <input type="text" id="invDisplay" value="900.000"
+          style="background:#fff;border:1.5px solid #dde4f0;border-radius:8px;font-family:'Barlow',sans-serif;font-size:14px;font-weight:700;color:#233368;padding:10px 13px;outline:none;width:100%;"
+          oninput="syncInv(this)" onfocus="this.select()"/>
+      </div>
+      <div style="background:#fffbf0;border:1px solid #f5c842;border-radius:8px;padding:9px 12px;font-size:10.5px;color:#7a5500;margin-top:8px;line-height:1.5;">
+        (*) Precio referencial indicativo en EUR. La inversión final dependerá de los formatos, opcionales y configuraciones específicas a incluir. Consultar con Bracker Proceso.
+      </div>
+    </div>
+    <button class="btn-main" onclick="goStep(3)">Siguiente →</button>
+    <button class="btn-back" onclick="goStep(1)">← Volver</button>
+  </div>
+
+  <!-- PASO 3 -->
+  <div class="section" id="s3">
+    <div class="card">
+      <div class="ctitle"><span class="cdot" style="background:#e07a00;"></span>Tu producto y formato</div>
+      <div class="f">
+        <label>Formato de envase</label>
+        <div class="slider-wrap"><div class="slider-row">
+          <input type="range" id="fmt_s" min="50" max="1000" step="5" value="250" oninput="onFmtChange();calc()"/>
+          <span class="slider-val" id="fmt_v">250g</span>
+        </div></div>
+      </div>
+      <div class="f">
+        <label>Precio de venta del producto</label>
+        <div class="slider-wrap"><div class="slider-row">
+          <input type="range" id="precio_s" min="0.5" max="10" step="0.1" value="2" oninput="sv('precio_v','€'+parseFloat(this.value).toFixed(1)+'/kg');calc()"/>
+          <span class="slider-val" id="precio_v">€2,0/kg</span>
+        </div></div>
+      </div>
+      <div class="f">
+        <label>Margen neto operacional del cliente <span class="hint">(sobre su producto, industria: 8–15%)</span></label>
+        <div class="slider-wrap"><div class="slider-row">
+          <input type="range" id="margen_s" min="4" max="30" step="0.5" value="12" oninput="sv('margen_v',parseFloat(this.value).toFixed(1)+'%');calc()"/>
+          <span class="slider-val" id="margen_v">12,0%</span>
+        </div></div>
+      </div>
+    </div>
+    <div class="supuestos-note">
+      <strong>Supuestos de operación (promedio industria):</strong> 2 turnos de 8 hrs · 22 días/mes · eficiencia Benhil 95%.<br>
+      Para un análisis personalizado con tus parámetros reales, nuestro equipo comercial puede ayudarte.
+    </div>
+    <button class="btn-main" onclick="goStep(4)">Siguiente →</button>
+    <button class="btn-back" onclick="goStep(2)">← Volver</button>
+  </div>
+
+  <!-- PASO 4: Cambios de formato -->
+  <div class="section" id="s4">
+    <div class="card">
+      <div class="ctitle"><span class="cdot" style="background:#7b5ea7;"></span>Cambios de formato <span style="font-size:9px;font-weight:400;color:#8a93ad;margin-left:4px;">— opcional</span></div>
+      <div style="font-size:11px;color:#5a6480;background:#f5f0ff;border-radius:8px;padding:10px 13px;margin-bottom:14px;line-height:1.6;border-left:3px solid #7b5ea7;">
+        Los cambios de formato detienen la producción. Benhil es más rápida en cambios, lo que libera más horas productivas.
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div>
+          <div style="font-size:10px;font-weight:700;color:#8a93ad;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Tu máquina actual</div>
+          <div class="f"><label>Cambios por mes</label>
+            <div class="slider-wrap"><div class="slider-row">
+              <input type="range" id="cambA_s" min="0" max="20" step="1" value="4" oninput="sv('cambA_v',this.value+' cambios');calc()"/>
+              <span class="slider-val" id="cambA_v" style="min-width:80px;">4 cambios</span>
+            </div></div></div>
+          <div class="f"><label>Min. por cambio</label>
+            <div class="slider-wrap"><div class="slider-row">
+              <input type="range" id="tA_s" min="0" max="120" step="5" value="60" oninput="sv('tA_v',this.value+' min');calc()"/>
+              <span class="slider-val" id="tA_v" style="min-width:60px;">60 min</span>
+            </div></div></div>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:700;color:#1086FC;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Benhil nueva</div>
+          <div class="f"><label>Cambios por mes</label>
+            <div class="slider-wrap"><div class="slider-row">
+              <input type="range" id="cambN_s" min="0" max="20" step="1" value="4" oninput="sv('cambN_v',this.value+' cambios');calc()"/>
+              <span class="slider-val" id="cambN_v" style="min-width:80px;">4 cambios</span>
+            </div></div></div>
+          <div class="f"><label>Min. por cambio</label>
+            <div class="slider-wrap"><div class="slider-row">
+              <input type="range" id="tN_s" min="0" max="120" step="5" value="30" oninput="sv('tN_v',this.value+' min');calc()"/>
+              <span class="slider-val" id="tN_v" style="min-width:60px;">30 min</span>
+            </div></div></div>
+        </div>
+      </div>
+      <div style="font-size:10px;color:#8a93ad;background:#f5f7fc;border-radius:6px;padding:7px 11px;margin-top:4px;">
+        Ref. Benhil: cambio de altura ~5 min · cambio completo 30–45 min
+      </div>
+    </div>
+    <button class="btn-main" onclick="goStep(5)">Calcular mi ROI →</button>
+    <button class="btn-back" onclick="goStep(3)">← Volver</button>
+  </div>
+
+  <!-- PASO 5: Resultados -->
+  <div class="section" id="s5">
+
+    <div class="res-hero">
+      <div>
+        <div class="rh-label">Beneficio anual estimado</div>
+        <div class="rh-val" id="r_total">—</div>
+        <div class="rh-sub" id="r_sub">—</div>
+      </div>
+      <div class="rh-right">
+        <div class="rh-pb-num" id="r_pb">—</div>
+        <div class="rh-pb-lbl">meses payback</div>
+      </div>
+    </div>
+
+    <div class="res-grid">
+      <div class="res-kpi"><div class="rk-lbl">Unidades extra/mes</div><div class="rk-val" id="r_uMes">—</div><div class="rk-sub">vs tu máquina actual</div></div>
+      <div class="res-kpi"><div class="rk-lbl">Toneladas extra/año</div><div class="rk-val" id="r_ton">—</div><div class="rk-sub" id="r_fmt">—</div></div>
+      <div class="res-kpi"><div class="rk-lbl">Margen neto adicional</div><div class="rk-val" id="r_ing">—</div><div class="rk-sub">mayor producción/año</div></div>
+      <div class="res-kpi"><div class="rk-lbl">Ahorro sobredosaje</div><div class="rk-val" id="r_sob">—</div><div class="rk-sub" id="r_sobKg">kg/año menos "regalados"</div></div>
+    </div>
+
+    <div class="roi-wrap">
+      <div class="roi-label">Composición del beneficio anual</div>
+      <div class="roi-track">
+        <div class="roi-seg-a" id="r_barA" style="width:0%"></div>
+        <div class="roi-seg-b" id="r_barB" style="width:0%"></div>
+      </div>
+      <div class="roi-leg">
+        <span><span class="roi-dot" style="background:#1086FC;"></span>Margen producción — <strong id="r_pctA">—</strong></span>
+        <span><span class="roi-dot" style="background:#1a7c46;"></span>Ahorro sobredosaje — <strong id="r_pctB">—</strong></span>
+      </div>
+    </div>
+
+    <div class="desglose">
+      <div class="desglose-row"><span class="dr-lbl">Producción actual (u/mes)</span><span class="dr-val" id="d_uA">—</span></div>
+      <div class="desglose-row"><span class="dr-lbl">Producción Benhil <span id="d_modelo" style="color:#1086FC;font-size:10px;font-weight:700;"></span> (u/mes)</span><span class="dr-val" id="d_uN">—</span></div>
+      <div class="desglose-row"><span class="dr-lbl">Kg "regalados" actual/año</span><span class="dr-val" id="d_kgA">—</span></div>
+      <div class="desglose-row"><span class="dr-lbl">Kg "regalados" Benhil/año</span><span class="dr-val green" id="d_kgN">—</span></div>
+      <div class="desglose-row"><span class="dr-lbl">TOTAL BENEFICIO ANUAL</span><span class="dr-val" id="d_tot">—</span></div>
+    </div>
+
+    <div class="cta-card">
+      <div class="cta-title">¿Quieres un análisis detallado para tu operación?</div>
+      <div class="cta-sub">Nuestro equipo puede personalizar este cálculo con los parámetros reales de tu planta — turnos, múltiples formatos, eficiencias históricas y más.</div>
+      <button class="btn-cta" onclick="window.open('https://bracker.cl/contacto','_blank')">Quiero saber más →</button>
+      <button class="btn-recalc" onclick="goStep(1)">← Recalcular con otros datos</button>
+      <button class="btn-recalc" onclick="goStep(4)" style="margin-top:6px;">← Ajustar cambios de formato</button>
+    </div>
+
+  </div>
+
+  <div class="footer-note">
+    Bracker Proceso · Calculadora ROI Envasadoras Benhil · bracker.cl<br>
+    Resultados estimativos basados en promedios de industria.<br>Hecho por: <strong style="color:#5a6480;">Nora Cárcamo</strong> &amp; Anthropic.
+  </div>
+
+</div>
+</div>
+
+<script>
+const MODELS={
+  M2000:{vel:100,ef:0.95,maxG:500, price:500000,  od:[[100,0.5],[250,0.5],[500,0.8]]},
+  M3000:{vel:100,ef:0.95,maxG:1000,price:800000,  od:[[100,0.3],[250,0.3],[500,0.5],[1000,1.2]]},
+  M5600:{vel:140,ef:0.95,maxG:500, price:900000,  od:[[100,0.2],[250,0.3],[500,0.5]]},
+  M7000:{vel:200,ef:0.95,maxG:250, price:1100000, od:[[100,0.2],[250,0.3]]},
+  M8000:{vel:250,ef:0.95,maxG:500, price:1450000, od:[[100,0.2],[250,0.3],[500,0.5]]},
+};
+const TURNOS=2,H_TURNO=8,DIAS_MES=22;
+let curModel='M5600';
+
+function syncInv(el){
+  const raw=el.value.replace(/\D/g,''),num=parseInt(raw)||0;
+  el.value=num>0?num.toLocaleString('es-CL'):'';
+  document.getElementById('inversion').value=num;
+  calc();
+}
+function sv(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
+function gv(id){return parseFloat(document.getElementById(id)?.value)||0;}
+function st(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
+function eur(n){if(!isFinite(n))return'—';if(Math.abs(n)>=1e6)return'€'+(n/1e6).toFixed(2)+'M';if(Math.abs(n)>=1e3)return'€'+(n/1e3).toFixed(1)+'k';return'€'+n.toFixed(2);}
+function fn(n){if(!isFinite(n))return'—';return Math.round(n).toLocaleString('es-CL');}
+function fd(n,d=1){if(!isFinite(n))return'—';return n.toFixed(d).replace('.',',');}
+
+function getOD(k,w){const m=MODELS[k];if(!m||w>m.maxG)return null;for(const[l,o]of m.od)if(w<=l)return o;return null;}
+
+function selModel(k){
+  curModel=k;
+  document.querySelectorAll('.mpill').forEach(p=>p.classList.toggle('sel',p.dataset.model===k));
+  // Auto-fill reference price
+  const m=MODELS[k];
+  if(m){
+    document.getElementById('inversion').value=m.price;
+    const disp=document.getElementById('invDisplay');
+    if(disp) disp.value=m.price.toLocaleString('es-CL');
+    const disc=document.getElementById('priceDisc');
+    if(disc) disc.style.display='block';
+  }
+  checkIncompat();calc();
+}
+
+function onFmtChange(){
+  const w=gv('fmt_s');
+  sv('fmt_v',w+'g');
+  checkIncompat();
+}
+
+function checkIncompat(){
+  const w=gv('fmt_s');
+  const box=document.getElementById('incompatAlert');
+  document.querySelectorAll('.mpill').forEach(p=>{
+    const mm=MODELS[p.dataset.model];
+    p.classList.toggle('incompat',mm&&w>mm.maxG);
+  });
+  const m=MODELS[curModel];
+  if(m&&w>m.maxG){
+    const comp=Object.keys(MODELS).find(k=>w<=MODELS[k].maxG);
+    if(comp)selModel(comp);
+    box.innerHTML='<strong>⚠</strong> El formato '+w+'g no es compatible con todos los modelos. Se muestran solo los disponibles.';
+    box.className='alert-incompat show';
+  } else {
+    box.className='alert-incompat';
+  }
+}
+
+function goStep(n){
+  for(let i=1;i<=5;i++){
+    document.getElementById('s'+i)?.classList.toggle('vis',i===n);
+    const dot=document.getElementById('dot'+i);
+    const lbl=document.getElementById('lbl'+i);
+    if(dot){dot.classList.remove('done','active','pending');dot.classList.add(i<n?'done':i===n?'active':'pending');}
+    if(lbl){lbl.classList.toggle('active',i===n);}
+    if(i<5){const line=document.getElementById('line'+i);if(line)line.classList.toggle('done',i<n);}
+  }
+  if(n===5)calc();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function calc(){
+  const velA=gv('velA_s'),efA=gv('efA_s')/100,odA=gv('odA_s');
+  const fmt=gv('fmt_s'),precio=gv('precio_s'),margen=gv('margen_s')/100;
+  const inv=gv('inversion');
+  const m=MODELS[curModel];if(!m)return;
+  const odN=getOD(curModel,fmt)||0;
+  const kgU=fmt/1000;
+  // Horas perdidas por cambios de formato (en horas/mes)
+  const cambHrsA=(gv('cambA_s')*gv('tA_s'))/60;
+  const cambHrsN=(gv('cambN_s')*gv('tN_s'))/60;
+  const hMesEfA=Math.max(0,TURNOS*H_TURNO*DIAS_MES-cambHrsA);
+  const hMesEfN=Math.max(0,TURNOS*H_TURNO*DIAS_MES-cambHrsN);
+  const hDia=TURNOS*H_TURNO;
+  const uHA=velA*60*efA,uHN=m.vel*60*m.ef;
+  const uAnoA=uHA*hMesEfA*12,uAnoN=uHN*hMesEfN*12;
+  const ingAd=(uAnoN-uAnoA)*kgU*precio*margen;
+  const kgSA=(odA/1000)*uAnoA,kgSN=(odN/1000)*uAnoN;
+  const dS=kgSA-kgSN,aSob=dS*precio;
+  const total=ingAd+aSob,pb=total>0?inv/(total/12):Infinity;
+
+  st('r_total',eur(total));
+  st('r_sub',curModel+' · '+fmt+'g · €'+precio.toFixed(1)+'/kg · margen cliente '+((margen*100).toFixed(0))+'%');
+  st('r_pb',pb<999?fd(pb,1):'>99');
+  st('r_uMes',fn(Math.round((uAnoN-uAnoA)/12)));
+  st('r_ton',fd((uAnoN-uAnoA)*kgU/1000)+' t');
+  st('r_fmt',fmt+'g · supuestos industria');
+  st('r_ing',eur(ingAd));
+  st('r_sob',eur(aSob));
+  st('r_sobKg',fd(dS,1)+' kg/año menos "regalados"');
+  st('d_uA',fn(Math.round(uHA*hMesEfA)));
+  st('d_uN',fn(Math.round(uHN*hMesEfN)));
+  st('d_modelo',curModel);
+  st('d_kgA',fd(kgSA,1)+' kg');
+  st('d_kgN',fd(kgSN,1)+' kg');
+  st('d_tot',eur(total));
+
+  if(total>0){
+    const pct=Math.min((total/inv)*100,100);
+    document.getElementById('r_barA').style.width=(pct*(ingAd/total)).toFixed(1)+'%';
+    document.getElementById('r_barB').style.width=(pct*(aSob/total)).toFixed(1)+'%';
+    st('r_pctA',Math.round(ingAd/total*100)+'%');
+    st('r_pctB',Math.round(aSob/total*100)+'%');
+  }
+}
+
+calc();
+</script>
+</body>
+</html>
